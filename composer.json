@@ -1,0 +1,22 @@
+{
+  "name": "gricob/imap",
+  "type": "library",
+  "keywords": ["imap"],
+  "license": "MIT",
+  "require": {
+    "php": "^8.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Gricob\\IMAP\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.0"
+  }
+}
