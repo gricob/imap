@@ -7,6 +7,8 @@ use Gricob\IMAP\Protocol\Command\Command;
 use Gricob\IMAP\Protocol\Command\Select;
 use Gricob\IMAP\Protocol\Command\LogIn;
 use Gricob\IMAP\Protocol\Imap;
+use Gricob\IMAP\Protocol\Response\Line\Status\Code\AppendUidCode;
+use Gricob\IMAP\Protocol\Response\Line\Status\OkStatus;
 use Gricob\IMAP\Protocol\Response\Response;
 use Gricob\IMAP\Transport\Connection;
 
@@ -56,6 +58,23 @@ readonly class Client
         $this->send(new Select($mailbox));
 
         return $this;
+    }
+
+    public function append(
+        string $message,
+        string $mailbox = 'INBOX',
+        ?array $flags = null,
+        ?\DateTimeInterface $internalDate = null
+    ): int
+    {
+        $response = $this->send(new Append($mailbox, $message, $flags, $internalDate));
+
+        $code = $response->status->code;
+        if ($code instanceof AppendUidCode) {
+            return $code->uid;
+        }
+
+        throw new \RuntimeException('Unable to retrieve uid from append response');
     }
 
     private function send(Command $command): Response
