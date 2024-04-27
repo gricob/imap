@@ -63,4 +63,16 @@ class ClientTest extends TestCase
 
         $this->assertGreaterThanOrEqual(1, $uid);
     }
+
+    #[Test]
+    #[Depends('append')]
+    public function search()
+    {
+        $result = self::$sut->search()
+            ->since(new \DateTimeImmutable('yesterday'))
+            ->before(new \DateTimeImmutable('tomorrow'))
+            ->get();
+
+        $this->assertContainsOnly('int', $result);
+    }
 }

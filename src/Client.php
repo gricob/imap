@@ -14,7 +14,7 @@ use Gricob\IMAP\Transport\Connection;
 
 readonly class Client
 {
-    private Configuration $configuration;
+    public Configuration $configuration;
     private Imap $imap;
 
     private function __construct(Configuration $configuration)
@@ -60,6 +60,11 @@ readonly class Client
         return $this;
     }
 
+    public function search(): Search
+    {
+        return new Search($this);
+    }
+
     public function append(
         string $message,
         string $mailbox = 'INBOX',
@@ -77,7 +82,7 @@ readonly class Client
         throw new \RuntimeException('Unable to retrieve uid from append response');
     }
 
-    private function send(Command $command): Response
+    public function send(Command $command): Response
     {
         $this->imap->connect();
 

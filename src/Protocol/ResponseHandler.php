@@ -7,6 +7,7 @@ use Gricob\IMAP\Protocol\Response\Line\Data\CapabilityData;
 use Gricob\IMAP\Protocol\Response\Line\Data\ExistsData;
 use Gricob\IMAP\Protocol\Response\Line\Data\FlagsData;
 use Gricob\IMAP\Protocol\Response\Line\Data\RecentData;
+use Gricob\IMAP\Protocol\Response\Line\Data\SearchData;
 use Gricob\IMAP\Protocol\Response\Line\Line;
 use Gricob\IMAP\Protocol\Response\Line\Status\BadStatus;
 use Gricob\IMAP\Protocol\Response\Line\Status\ByeStatus;
@@ -34,6 +35,7 @@ class ResponseHandler
         ExistsData::class,
         FlagsData::class,
         RecentData::class,
+        SearchData::class,
         // Continuation
         CommandContinuation::class,
     ];
