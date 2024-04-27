@@ -4,6 +4,7 @@ namespace Tests;
 
 use Gricob\IMAP\Client;
 use Gricob\IMAP\Configuration;
+use Gricob\IMAP\Mailbox;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
@@ -33,6 +34,15 @@ class ClientTest extends TestCase
     public function logIn()
     {
         self::$sut->logIn('user', 'pass');
+    }
+
+    #[Test]
+    #[Depends('logIn')]
+    public function list()
+    {
+        $mailboxes = self::$sut->list();
+
+        $this->assertEquals([new Mailbox([], '.', 'INBOX')], $mailboxes);
     }
 
     #[Test]

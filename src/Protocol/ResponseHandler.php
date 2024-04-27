@@ -6,6 +6,7 @@ use Gricob\IMAP\Protocol\Response\Line\CommandContinuation;
 use Gricob\IMAP\Protocol\Response\Line\Data\CapabilityData;
 use Gricob\IMAP\Protocol\Response\Line\Data\ExistsData;
 use Gricob\IMAP\Protocol\Response\Line\Data\FlagsData;
+use Gricob\IMAP\Protocol\Response\Line\Data\ListData;
 use Gricob\IMAP\Protocol\Response\Line\Data\RecentData;
 use Gricob\IMAP\Protocol\Response\Line\Data\SearchData;
 use Gricob\IMAP\Protocol\Response\Line\Line;
@@ -36,6 +37,7 @@ class ResponseHandler
         FlagsData::class,
         RecentData::class,
         SearchData::class,
+        ListData::class,
         // Continuation
         CommandContinuation::class,
     ];

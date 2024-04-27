@@ -4,9 +4,11 @@ namespace Gricob\IMAP;
 
 use Gricob\IMAP\Protocol\Command\Append;
 use Gricob\IMAP\Protocol\Command\Command;
+use Gricob\IMAP\Protocol\Command\ListCommand;
 use Gricob\IMAP\Protocol\Command\Select;
 use Gricob\IMAP\Protocol\Command\LogIn;
 use Gricob\IMAP\Protocol\Imap;
+use Gricob\IMAP\Protocol\Response\Line\Data\ListData;
 use Gricob\IMAP\Protocol\Response\Line\Status\Code\AppendUidCode;
 use Gricob\IMAP\Protocol\Response\Line\Status\OkStatus;
 use Gricob\IMAP\Protocol\Response\Response;
@@ -51,6 +53,23 @@ readonly class Client
     public function logIn(string $username, string $password): void
     {
         $this->send(new LogIn($username, $password));
+    }
+
+    /**
+     * @return array<Mailbox>
+     */
+    public function list(string $referenceName = '', string $pattern = '*'): array
+    {
+        $response = $this->send(new ListCommand($referenceName, $pattern));
+
+        $mailboxes = [];
+        foreach ($response->data as $data) {
+            if ($data instanceof ListData) {
+                $mailboxes[] = new Mailbox($data->nameAttributes, $data->hierarchyDelimiter, $data->name);
+            }
+        }
+
+        return $mailboxes;
     }
 
     public function select(string $mailbox): self
