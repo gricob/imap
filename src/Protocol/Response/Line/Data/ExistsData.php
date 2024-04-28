@@ -2,9 +2,7 @@
 
 namespace Gricob\IMAP\Protocol\Response\Line\Data;
 
-use Gricob\IMAP\Protocol\Response\Line\Line;
-
-final readonly class ExistsData implements Line
+final readonly class ExistsData implements Data
 {
     private const PATTERN = '/^[*] (?<numberOfMessages>\d*) EXISTS/';
 

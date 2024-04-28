@@ -62,14 +62,10 @@ readonly class Client
     {
         $response = $this->send(new ListCommand($referenceName, $pattern));
 
-        $mailboxes = [];
-        foreach ($response->data as $data) {
-            if ($data instanceof ListData) {
-                $mailboxes[] = new Mailbox($data->nameAttributes, $data->hierarchyDelimiter, $data->name);
-            }
-        }
-
-        return $mailboxes;
+        return array_map(
+            fn (ListData $data) => new Mailbox($data->nameAttributes, $data->hierarchyDelimiter, $data->name),
+            $response->getData(ListData::class),
+        );
     }
 
     public function select(string $mailbox): self

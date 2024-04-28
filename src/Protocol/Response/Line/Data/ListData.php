@@ -2,9 +2,7 @@
 
 namespace Gricob\IMAP\Protocol\Response\Line\Data;
 
-use Gricob\IMAP\Protocol\Response\Line\Line;
-
-class ListData implements Line
+class ListData implements Data
 {
     private const PATTERN = '/^\* LIST \((?<nameAttributes>.*?)\) \"(?<hierarchyDelimiter>.*?)\" \"(?<name>.*?)\"/';
 

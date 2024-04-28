@@ -2,9 +2,7 @@
 
 namespace Gricob\IMAP\Protocol\Response\Line\Data;
 
-use Gricob\IMAP\Protocol\Response\Line\Line;
-
-final readonly class CapabilityData implements Line
+final readonly class CapabilityData implements Data
 {
     private const PATTERN = '/\* CAPABILITY (?<capabilities>.*)/';
 

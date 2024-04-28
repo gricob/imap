@@ -2,9 +2,7 @@
 
 namespace Gricob\IMAP\Protocol\Response\Line\Data;
 
-use Gricob\IMAP\Protocol\Response\Line\Line;
-
-class SearchData implements Line
+class SearchData implements Data
 {
     private const PATTERN = '/^\* SEARCH( (?<numbers>\d*( ?\d*)?)?)?/';
 
