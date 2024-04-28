@@ -4,7 +4,7 @@ namespace Gricob\IMAP\Protocol\Command;
 
 use Gricob\IMAP\Protocol\Command\Argument\QuotedString;
 
-readonly class Select extends Command
+readonly class SelectCommand extends Command
 {
     public function __construct(string $mailbox)
     {

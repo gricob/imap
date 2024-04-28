@@ -2,11 +2,11 @@
 
 namespace Gricob\IMAP;
 
-use Gricob\IMAP\Protocol\Command\Append;
+use Gricob\IMAP\Protocol\Command\AppendCommand;
 use Gricob\IMAP\Protocol\Command\Command;
 use Gricob\IMAP\Protocol\Command\ListCommand;
-use Gricob\IMAP\Protocol\Command\Select;
-use Gricob\IMAP\Protocol\Command\LogIn;
+use Gricob\IMAP\Protocol\Command\SelectCommand;
+use Gricob\IMAP\Protocol\Command\LogInCommand;
 use Gricob\IMAP\Protocol\Imap;
 use Gricob\IMAP\Protocol\Response\Line\Data\ListData;
 use Gricob\IMAP\Protocol\Response\Line\Status\Code\AppendUidCode;
@@ -52,7 +52,7 @@ readonly class Client
 
     public function logIn(string $username, string $password): void
     {
-        $this->send(new LogIn($username, $password));
+        $this->send(new LogInCommand($username, $password));
     }
 
     /**
@@ -70,7 +70,7 @@ readonly class Client
 
     public function select(string $mailbox): self
     {
-        $this->send(new Select($mailbox));
+        $this->send(new SelectCommand($mailbox));
 
         return $this;
     }
@@ -87,7 +87,7 @@ readonly class Client
         ?\DateTimeInterface $internalDate = null
     ): int
     {
-        $response = $this->send(new Append($mailbox, $message, $flags, $internalDate));
+        $response = $this->send(new AppendCommand($mailbox, $message, $flags, $internalDate));
 
         $code = $response->status->code;
         if ($code instanceof AppendUidCode) {

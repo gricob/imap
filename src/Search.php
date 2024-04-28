@@ -32,7 +32,7 @@ class Search
     public function get(): array
     {
         $response = $this->client->send(
-            new Protocol\Command\Search(
+            new Protocol\Command\SearchCommand(
                 $this->client->configuration->useUid,
                 ...$this->criteria
             )

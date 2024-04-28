@@ -4,7 +4,7 @@ namespace Gricob\IMAP\Protocol\Command;
 
 use Gricob\IMAP\Protocol\Command\Argument\Search\Criteria;
 
-final readonly class Search extends Command
+final readonly class SearchCommand extends Command
 {
     public function __construct(
         bool $uid,

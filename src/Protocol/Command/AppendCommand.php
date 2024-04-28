@@ -7,7 +7,7 @@ use Gricob\IMAP\Protocol\Command\Argument\QuotedString;
 use Gricob\IMAP\Protocol\Command\Argument\SynchronizingLiteral;
 use Gricob\IMAP\Protocol\Command\Argument\ParenthesizedList;
 
-final readonly class Append extends Command implements Continuable
+final readonly class AppendCommand extends Command implements Continuable
 {
     public function __construct(
         string $mailboxName,
