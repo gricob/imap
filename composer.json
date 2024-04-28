@@ -4,7 +4,8 @@
   "keywords": ["imap"],
   "license": "MIT",
   "require": {
-    "php": "^8.2"
+    "php": "^8.2",
+    "ext-iconv": "*"
   },
   "autoload": {
     "psr-4": {

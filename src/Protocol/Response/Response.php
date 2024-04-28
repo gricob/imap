@@ -14,7 +14,7 @@ final readonly class Response
     }
 
     /**
-     * @template T of Data
+     * @template T
      * @param class-string<T> $type
      * @return array<T>
      */

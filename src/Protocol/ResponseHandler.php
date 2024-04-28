@@ -5,6 +5,7 @@ namespace Gricob\IMAP\Protocol;
 use Gricob\IMAP\Protocol\Response\Line\CommandContinuation;
 use Gricob\IMAP\Protocol\Response\Line\Data\CapabilityData;
 use Gricob\IMAP\Protocol\Response\Line\Data\ExistsData;
+use Gricob\IMAP\Protocol\Response\Line\Data\FetchData;
 use Gricob\IMAP\Protocol\Response\Line\Data\FlagsData;
 use Gricob\IMAP\Protocol\Response\Line\Data\ListData;
 use Gricob\IMAP\Protocol\Response\Line\Data\RecentData;
@@ -38,6 +39,7 @@ class ResponseHandler
         RecentData::class,
         SearchData::class,
         ListData::class,
+        FetchData::class,
         // Continuation
         CommandContinuation::class,
     ];
@@ -48,7 +50,7 @@ class ResponseHandler
 
         do {
             $raw = $stream->readLine();
-            if (preg_match('/\{(?<bytes>\d+)}\r\n$/', $raw, $matches)) {
+            while (preg_match('/\{(?<bytes>\d+)}\r\n$/', $raw, $matches)) {
                 $raw .= $stream->read((int) $matches['bytes']);
                 $raw .= $stream->readLine();
             }
