@@ -7,11 +7,16 @@ use Gricob\IMAP\Mime\Part\Part;
 class Message
 {
     public function __construct(
-        public int $id,
-        public array $headers,
-        public Part $body,
-        public \DateTimeImmutable $internalDate,
+        protected int $id,
+        protected array $headers,
+        protected Part $body,
+        protected \DateTimeImmutable $internalDate,
     ) {
+    }
+
+    public function id(): int
+    {
+        return $this->id;
     }
 
     public function headers(): array
