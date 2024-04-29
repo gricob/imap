@@ -338,4 +338,18 @@ class ClientTest extends TestCase
 
         self::$sut->deleteMessage($id);
     }
+
+    #[Test]
+    #[Depends('logIn')]
+    public function createMailbox()
+    {
+        $name = uniqid();
+
+        self::$sut->createMailbox($name);
+
+        $this->assertContains(
+            $name,
+            array_map(fn (Mailbox $mailbox) => $mailbox->name, self::$sut->list())
+        );
+    }
 }

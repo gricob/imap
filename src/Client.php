@@ -15,6 +15,7 @@ use Gricob\IMAP\Protocol\Command\Argument\SequenceSet;
 use Gricob\IMAP\Protocol\Command\Argument\Store\AddFlagsSilent;
 use Gricob\IMAP\Protocol\Command\Argument\Store\Flags;
 use Gricob\IMAP\Protocol\Command\Command;
+use Gricob\IMAP\Protocol\Command\CreateCommand;
 use Gricob\IMAP\Protocol\Command\ExpungeCommand;
 use Gricob\IMAP\Protocol\Command\FetchCommand;
 use Gricob\IMAP\Protocol\Command\ListCommand;
@@ -192,6 +193,11 @@ readonly class Client
         $this->send(new StoreCommand(new SequenceSet($id), new Flags(['\Deleted'], '+')));
 
         $this->send(new ExpungeCommand());
+    }
+
+    public function createMailbox(string $name): void
+    {
+        $this->send(new CreateCommand($name));
     }
 
     public function append(
