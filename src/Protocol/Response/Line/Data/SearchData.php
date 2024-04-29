@@ -4,7 +4,7 @@ namespace Gricob\IMAP\Protocol\Response\Line\Data;
 
 class SearchData implements Data
 {
-    private const PATTERN = '/^\* SEARCH( (?<numbers>\d*( ?\d*)?)?)?/';
+    private const PATTERN = '/^\* SEARCH( (?<numbers>\d*( ?\d*)+)?)?/';
 
     public function __construct(public readonly array $numbers)
     {
