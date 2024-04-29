@@ -2,9 +2,7 @@
 
 namespace Gricob\IMAP\Mime;
 
-use Gricob\IMAP\Mime\Part\MultiPart;
 use Gricob\IMAP\Mime\Part\Part;
-use Gricob\IMAP\Mime\Part\SinglePart;
 
 class Message
 {
@@ -15,13 +13,28 @@ class Message
     ) {
     }
 
+    public function headers(): array
+    {
+        return $this->headers;
+    }
+
+    public function body(): Part
+    {
+        return $this->body;
+    }
+
+    public function internalDate(): \DateTimeImmutable
+    {
+        return $this->internalDate;
+    }
+
     public function textBody(): ?string
     {
-        return $this->body->findPartByMimeType('text/plain')?->body;
+        return $this->body()->findPartByMimeType('text/plain')?->body;
     }
 
     public function htmlBody(): ?string
     {
-        return $this->body->findPartByMimeType('text/html')?->body;
+        return $this->body()->findPartByMimeType('text/html')?->body;
     }
 }

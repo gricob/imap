@@ -2,11 +2,15 @@
 
 namespace Gricob\IMAP;
 
+use Gricob\IMAP\Mime\LazyMessage;
 use Gricob\IMAP\Mime\Message;
 use Gricob\IMAP\Mime\Part\Disposition;
+use Gricob\IMAP\Mime\Part\LazyBody;
 use Gricob\IMAP\Mime\Part\MultiPart;
+use Gricob\IMAP\Mime\Part\Part;
 use Gricob\IMAP\Mime\Part\SinglePart;
 use Gricob\IMAP\Protocol\Command\AppendCommand;
+use Gricob\IMAP\Protocol\Command\Argument\Search\Criteria;
 use Gricob\IMAP\Protocol\Command\Argument\SequenceSet;
 use Gricob\IMAP\Protocol\Command\Command;
 use Gricob\IMAP\Protocol\Command\FetchCommand;
@@ -17,6 +21,7 @@ use Gricob\IMAP\Protocol\Imap;
 use Gricob\IMAP\Protocol\Response\Line\Data\FetchData;
 use Gricob\IMAP\Protocol\Response\Line\Data\Item\BodyStructure as BodyStructure;
 use Gricob\IMAP\Protocol\Response\Line\Data\ListData;
+use Gricob\IMAP\Protocol\Response\Line\Data\SearchData;
 use Gricob\IMAP\Protocol\Response\Line\Status\Code\AppendUidCode;
 use Gricob\IMAP\Protocol\Response\Response;
 use Gricob\IMAP\Transport\Connection;
@@ -113,6 +118,53 @@ readonly class Client
         );
     }
 
+    public function fetchHeaders(int $id): array
+    {
+        $response = $this->imap->send(
+            new FetchCommand(
+                $this->configuration->useUid,
+                new SequenceSet($id, $id),
+                ['BODY[HEADER]']
+            )
+        );
+
+        /** @var FetchData $data */
+        $data = $response->getData(FetchData::class)[0] ?? throw new MessageNotFound();
+
+        $rawHeaders = $data->getBodySection('HEADER')?->text ?? '';
+        return iconv_mime_decode_headers($rawHeaders);
+    }
+
+    public function fetchBody(int $id): Part
+    {
+        $response = $this->send(
+            new FetchCommand(
+                $this->configuration->useUid,
+                new SequenceSet($id, $id),
+                ["BODYSTRUCTURE"]
+            )
+        );
+
+        $data = $response->getData(FetchData::class)[0];
+
+        return $this->createMessagePart($id, '0', $data->bodyStructure->part);
+    }
+
+    public function fetchInternalDate(int $id): \DateTimeImmutable
+    {
+        $response = $this->send(
+            new FetchCommand(
+                $this->configuration->useUid,
+                new SequenceSet($id, $id),
+                ["INTERNALDATE"]
+            )
+        );
+
+        $data = $response->getData(FetchData::class)[0];
+
+        return $data->internalDate->date;
+    }
+
     public function fetchSectionBody(int $id, string $section): string
     {
         $response = $this->send(
@@ -152,6 +204,31 @@ readonly class Client
         return $this->imap->send($command);
     }
 
+    /**
+     * @param Criteria ...$criteria
+     * @return array<Message>
+     */
+    public function doSearch(Criteria ...$criteria): array
+    {
+        $response = $this->send(
+            new Protocol\Command\SearchCommand(
+                $this->configuration->useUid,
+                ...$criteria
+            )
+        );
+
+        $result = [];
+        foreach ($response->data as $data) {
+            if ($data instanceof SearchData) {
+                foreach ($data->numbers as $id) {
+                    $result[] = new LazyMessage($this, $id);
+                }
+            }
+        }
+
+        return $result;
+    }
+
     private function createMessagePart(int $id, string $section, BodyStructure\Part $part): Mime\Part\Part
     {
         if ($part instanceof BodyStructure\SinglePart) {
@@ -159,7 +236,7 @@ readonly class Client
                 $part->type,
                 $part->subtype,
                 $part->attributes,
-                $this->fetchSectionBody($id, $section === '0' ? '1' : $section),
+                new LazyBody($this, $id, $section === '0' ? '1' : $section),
                 $part->attributes['charset'] ?? 'utf-8',
                 $part->encoding,
                 null !== $part->disposition

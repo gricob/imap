@@ -6,6 +6,7 @@ use Gricob\IMAP\Client;
 use Gricob\IMAP\Configuration;
 use Gricob\IMAP\Mailbox;
 use Gricob\IMAP\MessageNotFound;
+use Gricob\IMAP\Mime\LazyMessage;
 use Gricob\IMAP\Mime\Part\MultiPart;
 use Gricob\IMAP\Mime\Part\SinglePart;
 use PHPUnit\Framework\Attributes\Depends;
@@ -86,7 +87,7 @@ class ClientTest extends TestCase
             ->before(new \DateTimeImmutable('tomorrow'))
             ->get();
 
-        $this->assertContainsOnly('int', $result);
+        $this->assertContainsOnly(LazyMessage::class, $result);
     }
 
     #[Test]

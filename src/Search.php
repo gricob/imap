@@ -2,10 +2,9 @@
 
 namespace Gricob\IMAP;
 
+use Gricob\IMAP\Mime\Message;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Before;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Since;
-use Gricob\IMAP\Protocol\Imap;
-use Gricob\IMAP\Protocol\Response\Line\Data\SearchData;
 
 class Search
 {
@@ -29,22 +28,11 @@ class Search
         return $this;
     }
 
+    /**
+     * @return array<Message>
+     */
     public function get(): array
     {
-        $response = $this->client->send(
-            new Protocol\Command\SearchCommand(
-                $this->client->configuration->useUid,
-                ...$this->criteria
-            )
-        );
-
-        $result = [];
-        foreach ($response->data as $data) {
-            if ($data instanceof SearchData) {
-                array_push($result, ...$data->numbers);
-            }
-        }
-
-        return $result;
+        return $this->client->doSearch(...$this->criteria);
     }
 }
