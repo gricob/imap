@@ -112,6 +112,7 @@ readonly class Client
         $headers = iconv_mime_decode_headers($rawHeaders);
 
         return new Message(
+            $id,
             $headers,
             $this->createMessagePart($id, '0', $data->bodyStructure->part),
             $data->internalDate->date,

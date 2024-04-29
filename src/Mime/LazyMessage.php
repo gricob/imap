@@ -9,8 +9,9 @@ class LazyMessage extends Message
 {
     public function __construct(
         private Client $client,
-        private int $id,
+        int $id,
     ) {
+        $this->id = $id;
     }
 
     public function headers(): array
