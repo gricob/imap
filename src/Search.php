@@ -3,6 +3,7 @@
 namespace Gricob\IMAP;
 
 use Gricob\IMAP\Mime\Message;
+use Gricob\IMAP\Protocol\Command\Argument\Search\All;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Before;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Since;
 
@@ -33,6 +34,10 @@ class Search
      */
     public function get(): array
     {
-        return $this->client->doSearch(...$this->criteria);
+        $criteria = empty($this->criteria)
+            ? [new All()]
+            : $this->criteria;
+
+        return $this->client->doSearch(...$criteria);
     }
 }
