@@ -10,6 +10,10 @@ final class ResponseStream
 
     public function read(int $bytes): string
     {
+        if ($bytes <= 0) {
+            return '';
+        }
+
         $remainingBytes = $bytes;
         $data = '';
         do {
