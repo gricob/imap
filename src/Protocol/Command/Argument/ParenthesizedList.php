@@ -2,7 +2,7 @@
 
 namespace Gricob\IMAP\Protocol\Command\Argument;
 
-final readonly class ParenthesizedList implements Argument
+readonly class ParenthesizedList implements Argument
 {
     public function __construct(public array $items)
     {

@@ -5,6 +5,7 @@ namespace Gricob\IMAP\Protocol;
 use Gricob\IMAP\Protocol\Response\Line\CommandContinuation;
 use Gricob\IMAP\Protocol\Response\Line\Data\CapabilityData;
 use Gricob\IMAP\Protocol\Response\Line\Data\ExistsData;
+use Gricob\IMAP\Protocol\Response\Line\Data\ExpungeData;
 use Gricob\IMAP\Protocol\Response\Line\Data\FetchData;
 use Gricob\IMAP\Protocol\Response\Line\Data\FlagsData;
 use Gricob\IMAP\Protocol\Response\Line\Data\ListData;
@@ -40,6 +41,7 @@ class ResponseHandler
         SearchData::class,
         ListData::class,
         FetchData::class,
+        ExpungeData::class,
         // Continuation
         CommandContinuation::class,
     ];

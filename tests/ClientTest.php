@@ -118,8 +118,8 @@ class ClientTest extends TestCase
             'From' => 'Sender <sender@localhost>',
             'To' => 'User <user@localhost>',
             'Content-Type' => 'text/plain; charset="UTF-8"'
-        ], $message->headers);
-        $this->assertInstanceOf(SinglePart::class, $message->body);
+        ], $message->headers());
+        $this->assertInstanceOf(SinglePart::class, $message->body());
         $this->assertEquals('Dolor sit amet', $message->textBody());
         $this->assertNull($message->htmlBody());
     }
@@ -162,9 +162,9 @@ class ClientTest extends TestCase
             'From' => 'Sender <sender@localhost>',
             'To' => 'User <user@localhost>',
             'Content-Type' => 'multipart/alternative; boundary="000000000000b6a7da061729c998"'
-        ], $message->headers);
-        $this->assertInstanceOf(MultiPart::class, $message->body);
-        $this->assertEquals('alternative', $message->body->subtype);
+        ], $message->headers());
+        $this->assertInstanceOf(MultiPart::class, $message->body());
+        $this->assertEquals('alternative', $message->body()->subtype);
         $this->assertEquals('Dolor sit amet', $message->textBody());
         $this->assertEquals('<div dir="ltr">Dolor sit amet</div>', $message->htmlBody());
     }
@@ -304,8 +304,8 @@ class ClientTest extends TestCase
 
         $this->assertEquals('Dolor sit amet', $message->textBody());
         $this->assertEquals('<div dir="ltr">Dolor sit amet</div>', $message->htmlBody());
-        $this->assertEquals('attachment', $message->body->parts[1]->disposition->type);
-        $this->assertEquals($attachment, $message->body->parts[1]->body);
+        $this->assertEquals('attachment', $message->body()->parts[1]->disposition->type);
+        $this->assertEquals($attachment, $message->body()->parts[1]->body);
     }
 
     #[Test]
@@ -315,5 +315,27 @@ class ClientTest extends TestCase
         $this->expectException(MessageNotFound::class);
 
         self::$sut->fetch(999999999);
+    }
+
+    #[Test]
+    #[Depends('mailbox')]
+    #[DoesNotPerformAssertions]
+    public function deleteMessage()
+    {
+        $id = self::$sut->append(
+            <<<RFC822
+            MIME-Version: 1.0
+            Date: Sat, 27 Apr 2024 20:49:48 +0200
+            Message-ID: <CAMjJg5jatty9mNkfS871w6=oDqXGETmpT9Y6_b7vU8_vz_yYMw@example.com>
+            Subject: Lorem ipsum
+            From: Sender <sender@localhost>
+            To: User <user@localhost>
+            Content-Type: text/plain; charset="UTF-8"
+            
+            Dolor sit amet
+            RFC822
+        );
+
+        self::$sut->deleteMessage($id);
     }
 }

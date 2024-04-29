@@ -12,11 +12,15 @@ use Gricob\IMAP\Mime\Part\SinglePart;
 use Gricob\IMAP\Protocol\Command\AppendCommand;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Criteria;
 use Gricob\IMAP\Protocol\Command\Argument\SequenceSet;
+use Gricob\IMAP\Protocol\Command\Argument\Store\AddFlagsSilent;
+use Gricob\IMAP\Protocol\Command\Argument\Store\Flags;
 use Gricob\IMAP\Protocol\Command\Command;
+use Gricob\IMAP\Protocol\Command\ExpungeCommand;
 use Gricob\IMAP\Protocol\Command\FetchCommand;
 use Gricob\IMAP\Protocol\Command\ListCommand;
 use Gricob\IMAP\Protocol\Command\SelectCommand;
 use Gricob\IMAP\Protocol\Command\LogInCommand;
+use Gricob\IMAP\Protocol\Command\StoreCommand;
 use Gricob\IMAP\Protocol\Imap;
 use Gricob\IMAP\Protocol\Response\Line\Data\FetchData;
 use Gricob\IMAP\Protocol\Response\Line\Data\Item\BodyStructure as BodyStructure;
@@ -179,6 +183,15 @@ readonly class Client
         $data = $response->getData(FetchData::class)[0];
 
         return $data->getBodySection($section)->text;
+    }
+
+    public function deleteMessage(Message|int $message): void
+    {
+        $id = $message instanceof Message ? $message->id() : $message;
+
+        $this->send(new StoreCommand(new SequenceSet($id), new Flags(['\Deleted'], '+')));
+
+        $this->send(new ExpungeCommand());
     }
 
     public function append(
