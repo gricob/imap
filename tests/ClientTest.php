@@ -73,7 +73,7 @@ class ClientTest extends TestCase
         Dolor sit amet
         RFC822;
 
-        $uid = self::$sut->append($message);
+        $uid = self::$sut->append($message, 'INBOX', [], new \DateTimeImmutable());
 
         $this->assertGreaterThanOrEqual(1, $uid);
     }
