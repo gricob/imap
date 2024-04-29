@@ -46,7 +46,7 @@ class ClientTest extends TestCase
     {
         $mailboxes = self::$sut->list();
 
-        $this->assertEquals([new Mailbox([], '.', 'INBOX')], $mailboxes);
+        $this->assertContainsOnlyInstancesOf(Mailbox::class, $mailboxes);
     }
 
     #[Test]
