@@ -4,7 +4,7 @@ namespace Gricob\IMAP\Protocol\Response\Line\Data;
 
 final class ListData implements Data
 {
-    private const PATTERN = '/^\* LIST \((?<nameAttributes>.*?)\) \"(?<hierarchyDelimiter>.*?)\" (?<name>.*)/';
+    private const PATTERN = '/^\* LIST \((?<nameAttributes>.*?)\) \"(?<hierarchyDelimiter>.*?)\" (?<name>.*)\r\n/';
 
     /**
      * @param list<string> $nameAttributes

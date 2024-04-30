@@ -20,9 +20,9 @@ class ListDataTest extends TestCase
     {
         return [
             'no list raw' => ['* FETCH', null],
-            'name with quotes' => ['* LIST () "/" "Mailbox name"', new ListData([], '/', 'Mailbox name')],
-            'name without quotes' => ['* LIST () "/" Mailbox name', new ListData([], '/', 'Mailbox name')],
-            'with name attributes' => ['* LIST (\Noselect \HasNoChildren) "/" Mailbox', new ListData(['\Noselect', '\HasNoChildren'], '/', 'Mailbox')],
+            'name with quotes' => ["* LIST () \"/\" \"Mailbox name\"\r\n", new ListData([], '/', 'Mailbox name')],
+            'name without quotes' => ["* LIST () \"/\" Mailbox name\r\n", new ListData([], '/', 'Mailbox name')],
+            'with name attributes' => ["* LIST (\\Noselect \\HasNoChildren) \"/\" Mailbox\r\n", new ListData(['\Noselect', '\HasNoChildren'], '/', 'Mailbox')],
         ];
     }
 }
