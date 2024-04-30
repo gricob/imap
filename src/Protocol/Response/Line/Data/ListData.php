@@ -4,7 +4,7 @@ namespace Gricob\IMAP\Protocol\Response\Line\Data;
 
 final class ListData implements Data
 {
-    private const PATTERN = '/^\* LIST \((?<nameAttributes>.*?)\) \"(?<hierarchyDelimiter>.*?)\" \"(?<name>.*?)\"/';
+    private const PATTERN = '/^\* LIST \((?<nameAttributes>.*?)\) \"(?<hierarchyDelimiter>.*?)\" (?<name>.*)/';
 
     /**
      * @param list<string> $nameAttributes
@@ -25,7 +25,7 @@ final class ListData implements Data
         return new self(
             empty($matches['nameAttributes']) ? [] : explode(' ', $matches['nameAttributes']),
             $matches['hierarchyDelimiter'],
-            $matches['name']
+            trim($matches['name'], '"')
         );
     }
 }
