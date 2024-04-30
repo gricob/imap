@@ -15,6 +15,9 @@ final readonly class FetchData implements Data
 {
     private const PATTERN = '/\* (?<id>\d*) FETCH (?<rawItems>.*)/ms';
 
+    /**
+     * @param list<BodySectionItem>|null $bodySections
+     */
     public function __construct(
         public int $id,
         public ?FlagsItem $flags,
@@ -45,13 +48,13 @@ final readonly class FetchData implements Data
             Rfc822Item::tryParse($rawItems),
             UidItem::tryParse($rawItems),
             BodyStructureItem::tryParse($rawItems),
-            BodySectionItem::tryParseAll($rawItems),
+            BodySectionItem::parseAll($rawItems),
         );
     }
 
     public function getBodySection(string $name): ?BodySectionItem
     {
-        foreach ($this->bodySections as $bodySection) {
+        foreach (($this->bodySections ?? []) as $bodySection) {
             if ($bodySection->section == $name) {
                 return $bodySection;
             }

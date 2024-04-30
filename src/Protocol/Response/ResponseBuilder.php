@@ -2,12 +2,17 @@
 
 namespace Gricob\IMAP\Protocol\Response;
 
+use Gricob\IMAP\Protocol\Response\Line\Data\Data;
 use Gricob\IMAP\Protocol\Response\Line\Line;
 use Gricob\IMAP\Protocol\Response\Line\Status\Status;
 
 class ResponseBuilder
 {
     private ?Status $status = null;
+
+    /**
+     * @var list<Line>
+     */
     private array $data = [];
 
     public function __construct(private string $statusTag)

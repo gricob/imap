@@ -6,6 +6,9 @@ final readonly class CapabilityData implements Data
 {
     private const PATTERN = '/\* CAPABILITY (?<capabilities>.*)/';
 
+    /**
+     * @param list<string> $capabilities
+     */
     public function __construct(public array $capabilities)
     {
     }

@@ -16,6 +16,6 @@ final readonly class UidItem
             return null;
         }
 
-        return new self($matches['uid']);
+        return new self((int) $matches['uid']);
     }
 }

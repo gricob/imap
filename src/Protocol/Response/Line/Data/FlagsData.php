@@ -2,11 +2,14 @@
 
 namespace Gricob\IMAP\Protocol\Response\Line\Data;
 
-class FlagsData implements Data
+final readonly class FlagsData implements Data
 {
     private const PATTERN = '/^\* FLAGS \((?<flags>(\\\w* ?)*)/';
 
-    public function __construct(array $flags)
+    /**
+     * @param list<string> $flags
+     */
+    public function __construct(public array $flags)
     {
     }
 

@@ -6,15 +6,20 @@ final readonly class EnvelopeItem
 {
     private const PATTERN = '/ENVELOPE \("(?<date>.*)" "(?<subject>.*)" (?<from>\(\(.*?\)\)) (?<sender>\(\(.*?\)\)) (?<replyTo>\(\(.*?\)\)) (NIL|(?<to>\(\(.*?\)\))) (NIL|(?<cc>\(\(.*?\)\))) (NIL|(?<bcc>\(\(.*?\)\))) (NIL|"(?<inReplyTo>.*?)") (NIL|"(?<messageId>.*?)")\)/';
 
+    /**
+     * @param list<EnvelopeItemAddress> $to
+     * @param list<EnvelopeItemAddress> $cc
+     * @param list<EnvelopeItemAddress> $bcc
+     */
     public function __construct(
         public \DateTimeImmutable $date,
         public string $subject,
         public EnvelopeItemAddress $from,
         public EnvelopeItemAddress $sender,
         public EnvelopeItemAddress $replyTo,
-        public array $to,
-        public array $cc,
-        public array $bcc,
+        public ?array $to,
+        public ?array $cc,
+        public ?array $bcc,
         public ?string $messageId,
     ) {
     }
@@ -31,9 +36,9 @@ final readonly class EnvelopeItem
             EnvelopeItemAddress::tryParseList($matches['from'])[0],
             EnvelopeItemAddress::tryParseList($matches['sender'])[0],
             EnvelopeItemAddress::tryParseList($matches['replyTo'])[0],
-            EnvelopeItemAddress::tryParseList($matches['to'] ?? null),
-            EnvelopeItemAddress::tryParseList($matches['cc'] ?? null),
-            EnvelopeItemAddress::tryParseList($matches['bcc'] ?? null),
+            EnvelopeItemAddress::tryParseList($matches['to'] ?? ''),
+            EnvelopeItemAddress::tryParseList($matches['cc'] ?? ''),
+            EnvelopeItemAddress::tryParseList($matches['bcc'] ?? ''),
             $matches['messageId'] ?? null,
         );
     }

@@ -4,6 +4,9 @@ namespace Gricob\IMAP\Protocol\Response\Line\Data\Item\BodyStructure;
 
 abstract readonly class Part
 {
+    /**
+     * @param array<string,string> $attributes
+     */
     public function __construct(
         public string $type,
         public string $subtype,
@@ -11,11 +14,14 @@ abstract readonly class Part
     ) {
     }
 
-    public static function tryParse(string $raw): ?static
+    public static function tryParse(string $raw): ?self
     {
         return SinglePart::tryParse($raw) ?? MultiPart::tryParse($raw);
     }
 
+    /**
+     * @return array<string,string>|null
+     */
     public static function tryParseAttributes(?string $raw): ?array
     {
         if (null === $raw) {

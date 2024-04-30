@@ -2,6 +2,7 @@
 
 namespace Gricob\IMAP;
 
+use Exception;
 use Gricob\IMAP\Mime\LazyMessage;
 use Gricob\IMAP\Mime\Message;
 use Gricob\IMAP\Mime\Part\Disposition;
@@ -114,16 +115,28 @@ readonly class Client
         $data = $response->getData(FetchData::class)[0] ?? throw new MessageNotFound();
 
         $rawHeaders = $data->getBodySection('HEADER')?->text ?? '';
-        $headers = iconv_mime_decode_headers($rawHeaders);
+        $headers = iconv_mime_decode_headers($rawHeaders) ?: [];
+
+        if (null === $internalDate = $data->internalDate?->date) {
+            throw new Exception('Unable to fetch internal date from message '.$id);
+        }
+
+        if (null === $part = $data->bodyStructure?->part) {
+            throw new Exception('Unable to fetch body structure from message '.$id);
+        }
 
         return new Message(
             $id,
             $headers,
-            $this->createMessagePart($id, '0', $data->bodyStructure->part),
-            $data->internalDate->date,
+            $this->createMessagePart($id, '0', $part),
+            $internalDate,
         );
     }
 
+    /**
+     * @return array<string, string>
+     * @throws MessageNotFound
+     */
     public function fetchHeaders(int $id): array
     {
         $response = $this->imap->send(
@@ -138,7 +151,7 @@ readonly class Client
         $data = $response->getData(FetchData::class)[0] ?? throw new MessageNotFound();
 
         $rawHeaders = $data->getBodySection('HEADER')?->text ?? '';
-        return iconv_mime_decode_headers($rawHeaders);
+        return iconv_mime_decode_headers($rawHeaders) ?: [];
     }
 
     public function fetchBody(int $id): Part
@@ -153,7 +166,11 @@ readonly class Client
 
         $data = $response->getData(FetchData::class)[0];
 
-        return $this->createMessagePart($id, '0', $data->bodyStructure->part);
+        if (null === $part = $data->bodyStructure?->part) {
+            throw new Exception('Unable to fetch body from message '.$id);
+        }
+
+        return $this->createMessagePart($id, '0', $part);
     }
 
     public function fetchInternalDate(int $id): \DateTimeImmutable
@@ -168,7 +185,11 @@ readonly class Client
 
         $data = $response->getData(FetchData::class)[0];
 
-        return $data->internalDate->date;
+        if (null === $internalDate = $data->internalDate?->date) {
+            throw new Exception('Unable to fetch internal date from message '.$id);
+        }
+
+        return $internalDate;
     }
 
     public function fetchSectionBody(int $id, string $section): string
@@ -183,7 +204,7 @@ readonly class Client
 
         $data = $response->getData(FetchData::class)[0];
 
-        return $data->getBodySection($section)->text;
+        return $data->getBodySection($section)?->text ?? '';
     }
 
     public function deleteMessage(Message|int $message): void
@@ -200,6 +221,9 @@ readonly class Client
         $this->send(new CreateCommand($name));
     }
 
+    /**
+     * @param list<string>|null $flags
+     */
     public function append(
         string $message,
         string $mailbox = 'INBOX',
@@ -268,12 +292,12 @@ readonly class Client
         }
 
         if (!$part instanceof BodyStructure\MultiPart) {
-            throw new \Exception('Unable to create message part from body structure part of class '.$part::class);
+            throw new Exception('Unable to create message part from body structure part of class '.$part::class);
         }
 
         $childParts = [];
         foreach ($part->parts as $index => $childPart) {
-            $childIndex = ($index + 1);
+            $childIndex = (string) ($index + 1);
             $childSection = $section === '0' ? $childIndex : $section.'.'.$childIndex;
             $childParts[] = $this->createMessagePart($id, $childSection, $childPart);
         }

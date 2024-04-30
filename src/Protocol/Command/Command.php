@@ -5,6 +5,10 @@ namespace Gricob\IMAP\Protocol\Command;
 abstract readonly class Command
 {
     public string $command;
+
+    /**
+     * @var array<string>
+     */
     public array $arguments;
 
     public function __construct(

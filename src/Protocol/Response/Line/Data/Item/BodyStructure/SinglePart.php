@@ -2,11 +2,15 @@
 
 namespace Gricob\IMAP\Protocol\Response\Line\Data\Item\BodyStructure;
 
-readonly class SinglePart extends Part
+final readonly class SinglePart extends Part
 {
     private const TEXT_PATTERN = '/^\(\"(?<type>TEXT)\" \"(?<subtype>.*?)\" \((?<attributes>.*?)\) (NIL|\"(?<id>.*?)\") (NIL|\"(?<description>.*)\") \"(?<encoding>.*?)\" (?<size>\d+) (?<bodyLines>\d+) (NIL|\"(?<md5>.*?)\") (NIL|\(\"(?<disposition>.*?)\" (NIL|\((?<dispositionAttributes>.*?)\)))/';
     private const PATTERN = '/^\(\"(?<type>.*?)\" \"(?<subtype>.*?)\" \((?<attributes>.*?)\) (NIL|\"(?<id>.*?)\") (NIL|\"(?<description>.*)\") \"(?<encoding>.*?)\" (?<size>\d+) (NIL|\"(?<md5>.*?)\") (NIL|\(\"(?<disposition>.*?)\" (NIL|\((?<dispositionAttributes>.*?)\)))/';
 
+    /**
+     * @param array<string,string> $attributes
+     * @param array<string,string> $dispositionAttributes
+     */
     public function __construct(
         string $type,
         string $subtype,

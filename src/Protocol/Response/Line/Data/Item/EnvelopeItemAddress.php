@@ -31,15 +31,18 @@ final readonly class EnvelopeItemAddress
         );
     }
 
+    /**
+     * @return list<self>
+     */
     public static function tryParseList(string $raw): array
     {
         if (empty($raw)) {
             return [];
         }
 
-        return array_map(
+        return array_filter(array_map(
             fn (string $rawAddress) => self::tryParse($rawAddress),
             explode(') (', trim($raw, '()'))
-        );
+        ));
     }
 }

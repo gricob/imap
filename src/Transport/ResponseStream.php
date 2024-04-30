@@ -4,6 +4,9 @@ namespace Gricob\IMAP\Transport;
 
 final class ResponseStream
 {
+    /**
+     * @param resource $stream
+     */
     public function __construct(private $stream)
     {
     }

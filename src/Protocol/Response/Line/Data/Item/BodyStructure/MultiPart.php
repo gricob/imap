@@ -6,6 +6,10 @@ final readonly class MultiPart extends Part
 {
     private const PATTERN = '/(?<parts>(?<part>\(([^()]|(?&part))*\))+) \"(?<subtype>.*?)\" \((?<attributes>.*)\)/';
 
+    /**
+     * @param array<string,string> $attributes
+     * @param list<Part> $parts
+     */
     public function __construct(
         string $subtype,
         array $attributes,
@@ -25,10 +29,10 @@ final readonly class MultiPart extends Part
         return new self(
             $matches['subtype'],
             self::tryParseAttributes($matches['attributes']) ?? [],
-            array_map(
+            array_filter(array_map(
                 fn (string $rawPart) => Part::tryParse($rawPart),
                 $partsMatches[0]
-            ),
+            )),
         );
     }
 }

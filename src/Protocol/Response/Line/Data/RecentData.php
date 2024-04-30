@@ -2,7 +2,7 @@
 
 namespace Gricob\IMAP\Protocol\Response\Line\Data;
 
-class RecentData implements Data
+final class RecentData implements Data
 {
     private const PATTERN = '/^[*] (?<numberOfMessages>\d*) RECENT/';
 

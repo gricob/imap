@@ -16,6 +16,6 @@ class Rfc822SizeItem
             return null;
         }
 
-        return new self($matches['size']);
+        return new self((int) $matches['size']);
     }
 }

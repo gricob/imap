@@ -11,7 +11,7 @@ abstract readonly class Status implements Line
     private const PATTERN = '/^(?<tag>\*|[a-zA-Z0-9]*) {STATUS}( \[(?<code>.*)\])?( (?<message>(.*)))?/';
 
     /**
-     * @var array<Code>
+     * @var array<class-string<Code>>
      */
     private const CODES = [
         AppendUidCode::class,

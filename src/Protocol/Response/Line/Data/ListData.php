@@ -2,10 +2,13 @@
 
 namespace Gricob\IMAP\Protocol\Response\Line\Data;
 
-class ListData implements Data
+final class ListData implements Data
 {
     private const PATTERN = '/^\* LIST \((?<nameAttributes>.*?)\) \"(?<hierarchyDelimiter>.*?)\" \"(?<name>.*?)\"/';
 
+    /**
+     * @param list<string> $nameAttributes
+     */
     public function __construct(
         public array $nameAttributes,
         public string $hierarchyDelimiter,

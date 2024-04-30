@@ -18,6 +18,6 @@ final readonly class AppendUidCode implements Code
             return null;
         }
 
-        return new self($matches['uidvalidity'], $matches['uid']);
+        return new self((int) $matches['uidvalidity'], (int) $matches['uid']);
     }
 }

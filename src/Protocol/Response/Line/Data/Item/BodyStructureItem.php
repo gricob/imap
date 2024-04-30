@@ -21,6 +21,10 @@ class BodyStructureItem
 
         $part = Part::tryParse($matches['parts']);
 
+        if (null === $part) {
+            return null;
+        }
+
         return new self($part);
     }
 }

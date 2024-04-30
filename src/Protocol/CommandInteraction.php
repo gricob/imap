@@ -36,8 +36,7 @@ final readonly class CommandInteraction implements ContinuationHandler
     {
         if (!$this->command instanceof Continuable) {
             throw new \RuntimeException(
-                'Command %s does not support continuable interaction',
-                $this->command->command
+                sprintf('Command %s does not support continuable interaction', $this->command->command)
             );
         }
 

@@ -6,6 +6,9 @@ use Gricob\IMAP\Protocol\Command\Argument\Argument;
 
 final readonly class Flags implements Argument
 {
+    /**
+     * @param list<string> $flags
+     */
     public function __construct(
         private array $flags,
         private string $modifier = '',

@@ -4,6 +4,10 @@ namespace Gricob\IMAP\Mime\Part;
 
 final readonly class MultiPart extends Part
 {
+    /**
+     * @param array<string,string> $attributes
+     * @param list<Part> $parts
+     */
     public function __construct(
         string $subtype,
         array $attributes,

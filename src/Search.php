@@ -5,10 +5,14 @@ namespace Gricob\IMAP;
 use Gricob\IMAP\Mime\Message;
 use Gricob\IMAP\Protocol\Command\Argument\Search\All;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Before;
+use Gricob\IMAP\Protocol\Command\Argument\Search\Criteria;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Since;
 
 class Search
 {
+    /**
+     * @var list<Criteria>
+     */
     private array $criteria;
 
     public function __construct(private readonly Client $client)

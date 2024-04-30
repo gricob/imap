@@ -2,7 +2,7 @@
 
 namespace Gricob\IMAP\Protocol\Response\Line;
 
-class CommandContinuation implements Line
+final class CommandContinuation implements Line
 {
     private const PATTERN = '/^\+ OK( (?<message>( |\w)*))?/';
 

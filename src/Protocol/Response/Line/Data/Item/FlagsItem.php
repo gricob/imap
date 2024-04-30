@@ -6,6 +6,9 @@ final readonly class FlagsItem
 {
     private const PATTERN = '/FLAGS \((?<flags>.*?)\)/';
 
+    /**
+     * @param list<string> $flags
+     */
     public function __construct(public array $flags)
     {
     }

@@ -12,13 +12,10 @@ class Connection
     private bool $allowSelfSigned;
     private bool $verifyPeerName;
 
-    private ?int $errorCode;
-    private ?string $errorMessage;
-
     /**
-     * @var resource|null
+     * @var resource|false
      */
-    private $stream = null;
+    private $stream = false;
 
     public function __construct(
         string $transport,
@@ -45,7 +42,7 @@ class Connection
 
     public function isOpen(): bool
     {
-        return null !== $this->stream;
+        return false !== $this->stream;
     }
 
     public function open(): void
@@ -56,8 +53,8 @@ class Connection
 
         $this->stream = stream_socket_client(
             sprintf('%s://%s:%s', $this->transport, $this->host, $this->port),
-            $this->errorCode,
-            $this->errorMessage,
+            $errorCode,
+            $errorMessage,
             $this->timeout,
             context: stream_context_create([
                 'ssl' => [
@@ -69,7 +66,9 @@ class Connection
         );
 
         if (false === $this->stream) {
-            throw new ConnectionFailed($this->errorMessage ?? 'Connection failed');
+            throw new ConnectionFailed(
+                sprintf('Connection failed [%s]: %s', $errorCode, $errorMessage)
+            );
         }
     }
 
@@ -81,16 +80,30 @@ class Connection
 
         fclose($this->stream);
 
-        $this->stream = null;
+        $this->stream = false;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function send(string $data): void
     {
+        if (!$this->stream) {
+            throw new \Exception('Unable to send data. Connection is not open');
+        }
+
         fwrite($this->stream, $data);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function receive(): ResponseStream
     {
+        if (!$this->stream) {
+            throw new \Exception('Unable to receive data. Connection is not open');
+        }
+
         return new ResponseStream($this->stream);
     }
 }

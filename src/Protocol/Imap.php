@@ -47,6 +47,7 @@ class Imap
             $greeting->status instanceof BadStatus,
             $greeting->status instanceof NoStatus,
             $greeting->status instanceof ByeStatus => throw new ConnectionRejected($greeting->status->message),
+            default => throw new \Exception('Unknown greeting status')
         };
     }
 

@@ -6,6 +6,9 @@ use Gricob\IMAP\Mime\Part\Part;
 
 class Message
 {
+    /**
+     * @param array<string, string> $headers
+     */
     public function __construct(
         protected int $id,
         protected array $headers,
@@ -19,6 +22,9 @@ class Message
         return $this->id;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function headers(): array
     {
         return $this->headers;

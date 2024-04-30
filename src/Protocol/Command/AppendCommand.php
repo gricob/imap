@@ -9,6 +9,9 @@ use Gricob\IMAP\Protocol\Command\Argument\ParenthesizedList;
 
 final readonly class AppendCommand extends Command implements Continuable
 {
+    /**
+     * @param list<string>|null $flags
+     */
     public function __construct(
         string $mailboxName,
         private string $message,

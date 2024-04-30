@@ -16,6 +16,10 @@ final readonly class InternalDateItem
             return null;
         }
 
-        return new self(\DateTimeImmutable::createFromFormat('d-M-Y H:i:s O', $matches['date']));
+        if (false === $date = \DateTimeImmutable::createFromFormat('d-M-Y H:i:s O', $matches['date'])) {
+            return null;
+        }
+
+        return new self($date);
     }
 }

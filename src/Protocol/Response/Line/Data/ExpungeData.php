@@ -2,7 +2,7 @@
 
 namespace Gricob\IMAP\Protocol\Response\Line\Data;
 
-class ExpungeData implements Data
+final readonly class ExpungeData implements Data
 {
     private const PATTERN = '/^[*] (?<id>\d*) EXPUNGE/';
 

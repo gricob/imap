@@ -6,8 +6,15 @@ abstract readonly class Part
 {
     public string $type;
     public string $subtype;
+
+    /**
+     * @var array<string, string>
+     */
     public array $attributes;
 
+    /**
+     * @param array<string,string> $attributes
+     */
     public function __construct(
         string $type,
         string $subtype,

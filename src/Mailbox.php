@@ -6,6 +6,9 @@ readonly class Mailbox
 {
     private const ATTRIBUTE_NOSELECT = '\Noselect';
 
+    /**
+     * @param list<string> $nameAttributes
+     */
     public function __construct(
         public array $nameAttributes,
         public string $hierarchyDelimiter,
