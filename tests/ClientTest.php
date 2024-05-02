@@ -16,13 +16,14 @@ use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase
 {
+    private static Configuration $configuration;
     private static Client $sut;
 
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
-        $configuration = new Configuration(
+        self::$configuration = new Configuration(
             'ssl',
             'localhost',
             3993,
@@ -30,7 +31,7 @@ class ClientTest extends TestCase
             allowSelfSigned: true,
         );
 
-        self::$sut = Client::create($configuration);
+        self::$sut = Client::create(self::$configuration);
     }
 
     #[Test]
@@ -350,6 +351,27 @@ class ClientTest extends TestCase
         $this->assertContains(
             $name,
             array_map(fn (Mailbox $mailbox) => $mailbox->name, self::$sut->list())
+        );
+    }
+
+    #[Test]
+    public function createClientWithLogger()
+    {
+        $logger = new InMemoryLogger();
+
+        $sut = Client::create(self::$configuration, $logger);
+
+        $sut->logIn('user', 'pass');
+
+        $this->assertEquals(
+            [
+                'debug' => [
+                    ['* OK IMAP4rev1 Server GreenMail v2.1.0-alpha-4 ready\r\n'],
+                    ['A001 LOGIN \"user\" \"pass\"\r\n'],
+                    ['A001 OK LOGIN completed.\r\n']
+                ]
+            ],
+            $logger->logs,
         );
     }
 }

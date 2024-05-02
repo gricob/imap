@@ -13,7 +13,6 @@ use Gricob\IMAP\Mime\Part\SinglePart;
 use Gricob\IMAP\Protocol\Command\AppendCommand;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Criteria;
 use Gricob\IMAP\Protocol\Command\Argument\SequenceSet;
-use Gricob\IMAP\Protocol\Command\Argument\Store\AddFlagsSilent;
 use Gricob\IMAP\Protocol\Command\Argument\Store\Flags;
 use Gricob\IMAP\Protocol\Command\Command;
 use Gricob\IMAP\Protocol\Command\CreateCommand;
@@ -30,16 +29,20 @@ use Gricob\IMAP\Protocol\Response\Line\Data\ListData;
 use Gricob\IMAP\Protocol\Response\Line\Data\SearchData;
 use Gricob\IMAP\Protocol\Response\Line\Status\Code\AppendUidCode;
 use Gricob\IMAP\Protocol\Response\Response;
-use Gricob\IMAP\Transport\Connection;
+use Gricob\IMAP\Transport\SocketConnection;
+use Gricob\IMAP\Transport\TraceableConnection;
+use Psr\Log\LoggerInterface;
 
 readonly class Client
 {
     public Configuration $configuration;
     private Imap $imap;
 
-    private function __construct(Configuration $configuration)
-    {
-        $connection = new Connection(
+    private function __construct(
+        Configuration $configuration,
+        ?LoggerInterface $logger,
+    ) {
+        $connection = new SocketConnection(
             $configuration->transport,
             $configuration->host,
             $configuration->port,
@@ -49,13 +52,17 @@ readonly class Client
             $configuration->allowSelfSigned,
         );
 
+        if (null !== $logger) {
+            $connection = new TraceableConnection($connection, $logger);
+        }
+
         $this->configuration = $configuration;
         $this->imap = new Imap($connection);
     }
 
-    public static function create(Configuration $configuration): self
+    public static function create(Configuration $configuration, ?LoggerInterface $logger = null): self
     {
-        return new self($configuration);
+        return new self($configuration, $logger);
     }
 
     public function connect(): void

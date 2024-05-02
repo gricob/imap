@@ -5,7 +5,8 @@
   "license": "MIT",
   "require": {
     "php": "^8.2",
-    "ext-iconv": "*"
+    "ext-iconv": "*",
+    "psr/log": "^1.0|^2.0|^3.0"
   },
   "autoload": {
     "psr-4": {
