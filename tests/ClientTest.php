@@ -305,8 +305,8 @@ class ClientTest extends TestCase
 
         $this->assertEquals('Dolor sit amet', $message->textBody());
         $this->assertEquals('<div dir="ltr">Dolor sit amet</div>', $message->htmlBody());
-        $this->assertEquals('attachment', $message->body()->parts[1]->disposition->type);
-        $this->assertEquals($attachment, $message->body()->parts[1]->body);
+        $this->assertEquals('attachment', $message->body()->parts[1]->disposition()->type);
+        $this->assertEquals($attachment, $message->body()->parts[1]->body());
     }
 
     #[Test]

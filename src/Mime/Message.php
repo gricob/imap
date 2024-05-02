@@ -42,11 +42,11 @@ class Message
 
     public function textBody(): ?string
     {
-        return $this->body()->findPartByMimeType('text/plain')?->body;
+        return $this->body()->findPartByMimeType('text/plain')?->decodedBody();
     }
 
     public function htmlBody(): ?string
     {
-        return $this->body()->findPartByMimeType('text/html')?->body;
+        return $this->body()->findPartByMimeType('text/html')?->decodedBody();
     }
 }
