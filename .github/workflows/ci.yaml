@@ -1,0 +1,30 @@
+name: CI
+on: push
+jobs:
+  phpstan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: openssl, iconv
+      - uses: php-actions/composer@v6
+      - run: vendor/bin/phpstan analyse -l 9 src
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [8.2, 8.3]
+    steps:
+      - uses: actions/checkout@v3
+      - run: docker compose -f "docker-compose.yml" up -d --wait
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: openssl, iconv
+      - uses: php-actions/composer@v6
+      - run: vendor/bin/phpunit
+      - if: always()
+        run: docker-compose -f "docker-compose.yml" down
