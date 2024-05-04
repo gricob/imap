@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Transport;
+
+use Exception;
 
 class SocketConnection implements Connection
 {
@@ -86,7 +90,7 @@ class SocketConnection implements Connection
     public function send(string $data): void
     {
         if (!$this->stream) {
-            throw new \Exception('Unable to send data. SocketConnection is not open');
+            throw new Exception('Unable to send data. SocketConnection is not open');
         }
 
         fwrite($this->stream, $data);
@@ -95,7 +99,7 @@ class SocketConnection implements Connection
     public function receive(): ResponseStream
     {
         if (!$this->stream) {
-            throw new \Exception('Unable to receive data. SocketConnection is not open');
+            throw new Exception('Unable to receive data. SocketConnection is not open');
         }
 
         return new SocketResponseStream($this->stream);

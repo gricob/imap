@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Protocol;
 
 use Gricob\IMAP\Protocol\Command\Command;
 use Gricob\IMAP\Protocol\Command\Continuable;
 use Gricob\IMAP\Protocol\Response\Response;
 use Gricob\IMAP\Transport\Connection;
+use RuntimeException;
 
 final readonly class CommandInteraction implements ContinuationHandler
 {
@@ -20,10 +23,9 @@ final readonly class CommandInteraction implements ContinuationHandler
     public function interact(): Response
     {
         $request = sprintf(
-            "%s %s %s\r\n",
+            "%s %s\r\n",
             $this->tag,
-            $this->command->command,
-            implode(' ', $this->command->arguments),
+            $this->command,
         );
 
         $this->connection->send($request);
@@ -35,8 +37,8 @@ final readonly class CommandInteraction implements ContinuationHandler
     public function continue(): void
     {
         if (!$this->command instanceof Continuable) {
-            throw new \RuntimeException(
-                sprintf('Command %s does not support continuable interaction', $this->command->command)
+            throw new RuntimeException(
+                sprintf('Command %s does not support continuable interaction', $this->command->command())
             );
         }
 

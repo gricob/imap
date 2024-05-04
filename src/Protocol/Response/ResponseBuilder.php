@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Protocol\Response;
 
+use BadMethodCallException;
 use Gricob\IMAP\Protocol\Response\Line\Data\Data;
 use Gricob\IMAP\Protocol\Response\Line\Line;
 use Gricob\IMAP\Protocol\Response\Line\Status\Status;
@@ -37,7 +40,7 @@ class ResponseBuilder
     public function build(): Response
     {
         if (null === $this->status) {
-            throw new \BadMethodCallException();
+            throw new BadMethodCallException();
         }
 
         return new Response(

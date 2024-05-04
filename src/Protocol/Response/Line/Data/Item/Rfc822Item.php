@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Protocol\Response\Line\Data\Item;
 
 final readonly class Rfc822Item

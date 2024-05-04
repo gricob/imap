@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Mime;
 
+use DateTimeImmutable;
 use Gricob\IMAP\Mime\Part\Part;
 
 class Message
@@ -13,7 +16,7 @@ class Message
         protected int $id,
         protected array $headers,
         protected Part $body,
-        protected \DateTimeImmutable $internalDate,
+        protected DateTimeImmutable $internalDate,
     ) {
     }
 
@@ -35,7 +38,7 @@ class Message
         return $this->body;
     }
 
-    public function internalDate(): \DateTimeImmutable
+    public function internalDate(): DateTimeImmutable
     {
         return $this->internalDate;
     }

@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Protocol\Response\Line\Data\Item;
+
+use DateTimeImmutable;
 
 final readonly class EnvelopeItem
 {
@@ -12,7 +16,7 @@ final readonly class EnvelopeItem
      * @param list<EnvelopeItemAddress> $bcc
      */
     public function __construct(
-        public \DateTimeImmutable $date,
+        public DateTimeImmutable $date,
         public string $subject,
         public EnvelopeItemAddress $from,
         public EnvelopeItemAddress $sender,
@@ -31,7 +35,7 @@ final readonly class EnvelopeItem
         }
 
         return new self(
-            new \DateTimeImmutable($matches['date']),
+            new DateTimeImmutable($matches['date']),
             $matches['subject'],
             EnvelopeItemAddress::tryParseList($matches['from'])[0],
             EnvelopeItemAddress::tryParseList($matches['sender'])[0],

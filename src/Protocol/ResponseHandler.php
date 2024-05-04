@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Protocol;
 
 use Gricob\IMAP\Protocol\Response\Line\CommandContinuation;
@@ -20,6 +22,7 @@ use Gricob\IMAP\Protocol\Response\Line\Status\PreAuthStatus;
 use Gricob\IMAP\Protocol\Response\Response;
 use Gricob\IMAP\Protocol\Response\ResponseBuilder;
 use Gricob\IMAP\Transport\ResponseStream;
+use RuntimeException;
 
 class ResponseHandler
 {
@@ -77,6 +80,6 @@ class ResponseHandler
             }
         }
 
-        throw new \RuntimeException('Unable to find parser for response line: '.$raw);
+        throw new RuntimeException('Unable to find parser for response line: '.$raw);
     }
 }

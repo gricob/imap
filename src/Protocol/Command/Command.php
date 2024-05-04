@@ -1,21 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Protocol\Command;
 
-abstract readonly class Command
+use Gricob\IMAP\Protocol\Command\Argument\Argument;
+use Stringable;
+
+abstract readonly class Command implements Stringable
 {
-    public string $command;
+    private string $command;
 
     /**
-     * @var array<string>
+     * @var Argument[]
      */
-    public array $arguments;
+    private array $arguments;
 
     public function __construct(
         string $command,
-        string ...$arguments,
+        Argument ...$arguments,
     ) {
         $this->command = $command;
         $this->arguments = $arguments;
+    }
+
+    public function command(): string
+    {
+        return $this->command;
+    }
+
+    public function __toString(): string
+    {
+        return sprintf(
+            '%s %s',
+            $this->command,
+            implode(' ', $this->arguments)
+        );
     }
 }

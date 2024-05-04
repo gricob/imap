@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Protocol\Command\Argument;
 
 final readonly class QuotedString implements Argument

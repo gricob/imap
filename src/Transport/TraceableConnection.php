@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Transport;
 
 use Psr\Log\LoggerInterface;

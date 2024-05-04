@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use Exception;
 use Gricob\IMAP\Mime\LazyMessage;
 use Gricob\IMAP\Mime\Message;
@@ -32,6 +36,7 @@ use Gricob\IMAP\Protocol\Response\Response;
 use Gricob\IMAP\Transport\SocketConnection;
 use Gricob\IMAP\Transport\TraceableConnection;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 readonly class Client
 {
@@ -167,7 +172,7 @@ readonly class Client
             new FetchCommand(
                 $this->configuration->useUid,
                 new SequenceSet($id, $id),
-                ["BODYSTRUCTURE"]
+                ['BODYSTRUCTURE']
             )
         );
 
@@ -180,13 +185,13 @@ readonly class Client
         return $this->createMessagePart($id, '0', $part);
     }
 
-    public function fetchInternalDate(int $id): \DateTimeImmutable
+    public function fetchInternalDate(int $id): DateTimeImmutable
     {
         $response = $this->send(
             new FetchCommand(
                 $this->configuration->useUid,
                 new SequenceSet($id, $id),
-                ["INTERNALDATE"]
+                ['INTERNALDATE']
             )
         );
 
@@ -235,7 +240,7 @@ readonly class Client
         string $message,
         string $mailbox = 'INBOX',
         ?array $flags = null,
-        ?\DateTimeInterface $internalDate = null
+        ?DateTimeInterface $internalDate = null
     ): int
     {
         $response = $this->send(new AppendCommand($mailbox, $message, $flags, $internalDate));
@@ -245,7 +250,7 @@ readonly class Client
             return $code->uid;
         }
 
-        throw new \RuntimeException('Unable to retrieve uid from append response');
+        throw new RuntimeException('Unable to retrieve uid from append response');
     }
 
     public function send(Command $command): Response

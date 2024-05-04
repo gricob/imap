@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Transport;
 
 use Psr\Log\LoggerInterface;
@@ -32,7 +34,7 @@ final readonly class TraceableResponseStream implements ResponseStream
 
     private function debug(string $data): void
     {
-        //$data = addslashes($data);
+        $data = addslashes($data);
         $data = str_replace("\r\n", "\\r\\n", $data);
 
         $this->logger->debug($data);

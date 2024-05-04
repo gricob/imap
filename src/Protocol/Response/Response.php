@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Protocol\Response;
 
 use Gricob\IMAP\Protocol\Response\Line\Data\Data;

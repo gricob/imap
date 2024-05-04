@@ -1,6 +1,8 @@
 <?php
 
-namespace Protocol\Response\Line\Data;
+declare(strict_types=1);
+
+namespace Tests\Protocol\Response\Line\Data;
 
 use Gricob\IMAP\Protocol\Response\Line\Data\ListData;
 use PHPUnit\Framework\Attributes\DataProvider;

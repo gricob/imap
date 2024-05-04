@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Mime\Part;
 
 final readonly class SinglePart extends Part
@@ -10,7 +12,7 @@ final readonly class SinglePart extends Part
         string $type,
         string $subtype,
         array $attributes,
-        private string $body,
+        private Body $body,
         private string $charset,
         string $encoding,
         private ?Disposition $disposition,
@@ -22,14 +24,14 @@ final readonly class SinglePart extends Part
 
     public function body(): string
     {
-        return $this->body;
+        return (string) $this->body;
     }
 
     public function decodedBody(): string
     {
         return match ($this->encoding) {
-            'quoted-printable' => quoted_printable_decode($this->body),
-            default => $this->body,
+            'quoted-printable' => quoted_printable_decode($this->body()),
+            default => $this->body(),
         };
     }
 

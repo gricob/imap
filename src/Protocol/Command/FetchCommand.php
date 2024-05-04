@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Protocol\Command;
 
+use Gricob\IMAP\Protocol\Command\Argument\ParenthesizedList;
 use Gricob\IMAP\Protocol\Command\Argument\SequenceSet;
 
 final readonly class FetchCommand extends Command
@@ -19,7 +22,7 @@ final readonly class FetchCommand extends Command
         parent::__construct(
             $uid ? 'UID FETCH' : 'FETCH',
             $sequenceSet,
-            '('.implode(' ', $items).')'
+            new ParenthesizedList($items),
         );
     }
 }

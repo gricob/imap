@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Transport;
 
-class ConnectionFailed extends \RuntimeException
+use RuntimeException;
+
+class ConnectionFailed extends RuntimeException
 {
 }

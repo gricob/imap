@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP;
 
-class MessageNotFound extends \Exception
+use Exception;
+
+class MessageNotFound extends Exception
 {
 }

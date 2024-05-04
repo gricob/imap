@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Protocol\Command;
 
+use DateTimeInterface;
 use Gricob\IMAP\Protocol\Command\Argument\DateTime;
 use Gricob\IMAP\Protocol\Command\Argument\QuotedString;
 use Gricob\IMAP\Protocol\Command\Argument\SynchronizingLiteral;
@@ -16,7 +19,7 @@ final readonly class AppendCommand extends Command implements Continuable
         string $mailboxName,
         private string $message,
         ?array $flags,
-        ?\DateTimeInterface $internalDate
+        ?DateTimeInterface $internalDate
     ) {
         parent::__construct(
             'APPEND',

@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Mime\Part;
 
-class Body implements \Stringable
+use Stringable;
+
+class Body implements Stringable
 {
     public function __construct(
         protected string $value

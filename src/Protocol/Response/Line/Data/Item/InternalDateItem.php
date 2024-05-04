@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Protocol\Response\Line\Data\Item;
+
+use DateTimeImmutable;
 
 final readonly class InternalDateItem
 {
     private const PATTERN = '/INTERNALDATE \"(?<date>\d{2}-\w{3}-\d{4} \d{2}:\d{2}:\d{2} \+\d{4})\"/';
 
-    public function __construct(public \DateTimeImmutable $date)
+    public function __construct(public DateTimeImmutable $date)
     {
     }
 
@@ -16,7 +20,7 @@ final readonly class InternalDateItem
             return null;
         }
 
-        if (false === $date = \DateTimeImmutable::createFromFormat('d-M-Y H:i:s O', $matches['date'])) {
+        if (false === $date = DateTimeImmutable::createFromFormat('d-M-Y H:i:s O', $matches['date'])) {
             return null;
         }
 

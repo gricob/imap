@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
+use DateTimeImmutable;
 use Gricob\IMAP\Client;
 use Gricob\IMAP\Configuration;
 use Gricob\IMAP\Mailbox;
@@ -74,7 +77,7 @@ class ClientTest extends TestCase
         Dolor sit amet
         RFC822;
 
-        $uid = self::$sut->append($message, 'INBOX', [], new \DateTimeImmutable());
+        $uid = self::$sut->append($message, 'INBOX', [], new DateTimeImmutable());
 
         $this->assertGreaterThanOrEqual(1, $uid);
     }
@@ -84,8 +87,8 @@ class ClientTest extends TestCase
     public function search()
     {
         $result = self::$sut->search()
-            ->since(new \DateTimeImmutable('yesterday'))
-            ->before(new \DateTimeImmutable('tomorrow'))
+            ->since(new DateTimeImmutable('yesterday'))
+            ->before(new DateTimeImmutable('tomorrow'))
             ->get();
 
         $this->assertContainsOnly(LazyMessage::class, $result);

@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Transport;
+
+use Exception;
 
 interface Connection
 {
@@ -11,12 +15,12 @@ interface Connection
     public function close(): void;
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function send(string $data): void;
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function receive(): ResponseStream;
 }

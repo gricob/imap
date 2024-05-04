@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP;
 
+use DateTimeInterface;
 use Gricob\IMAP\Mime\Message;
 use Gricob\IMAP\Protocol\Command\Argument\Search\All;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Before;
@@ -19,14 +22,14 @@ class Search
     {
     }
 
-    public function before(\DateTimeInterface $date): self
+    public function before(DateTimeInterface $date): self
     {
         $this->criteria[] = new Before($date);
 
         return $this;
     }
 
-    public function since(\DateTimeInterface $date): self
+    public function since(DateTimeInterface $date): self
     {
         $this->criteria[] = new Since($date);
 

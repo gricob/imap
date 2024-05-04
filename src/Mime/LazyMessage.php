@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Mime;
 
+use DateTimeImmutable;
 use Gricob\IMAP\Client;
 use Gricob\IMAP\Mime\Part\Part;
 
@@ -32,7 +35,7 @@ class LazyMessage extends Message
         return parent::body();
     }
 
-    public function internalDate(): \DateTimeImmutable
+    public function internalDate(): DateTimeImmutable
     {
         if (!isset($this->internalDate)) {
             $this->internalDate = $this->client->fetchInternalDate($this->id);

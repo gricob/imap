@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gricob\IMAP\Protocol;
 
+use Exception;
 use Gricob\IMAP\Protocol\Command\Command;
 use Gricob\IMAP\Protocol\Response\Line\Status\BadStatus;
 use Gricob\IMAP\Protocol\Response\Line\Status\ByeStatus;
@@ -10,6 +13,7 @@ use Gricob\IMAP\Protocol\Response\Line\Status\OkStatus;
 use Gricob\IMAP\Protocol\Response\Line\Status\PreAuthStatus;
 use Gricob\IMAP\Protocol\Response\Response;
 use Gricob\IMAP\Transport\Connection;
+use RuntimeException;
 
 class Imap
 {
@@ -43,11 +47,11 @@ class Imap
 
         match (true) {
             $greeting->status instanceof OkStatus => null, // Do nothing
-            $greeting->status instanceof PreAuthStatus => throw new \RuntimeException('pre-auth is not supported'),
+            $greeting->status instanceof PreAuthStatus => throw new RuntimeException('pre-auth is not supported'),
             $greeting->status instanceof BadStatus,
             $greeting->status instanceof NoStatus,
             $greeting->status instanceof ByeStatus => throw new ConnectionRejected($greeting->status->message),
-            default => throw new \Exception('Unknown greeting status')
+            default => throw new Exception('Unknown greeting status')
         };
     }
 
