@@ -1,7 +1,9 @@
 {
   "name": "gricob/imap",
+  "description": "IMAP client for PHP",
   "type": "library",
   "keywords": ["imap"],
+  "homepage": "https://github.com/gricob/imap",
   "license": "MIT",
   "require": {
     "php": "^8.2",
