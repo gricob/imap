@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gricob\IMAP\Transport;
+namespace Gricob\IMAP\Transport\Traceable;
 
+use Gricob\IMAP\Transport\Connection;
+use Gricob\IMAP\Transport\ResponseStream;
 use Psr\Log\LoggerInterface;
 
 final readonly class TraceableConnection implements Connection

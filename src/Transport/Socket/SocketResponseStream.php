@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Gricob\IMAP\Transport;
+namespace Gricob\IMAP\Transport\Socket;
+
+use Gricob\IMAP\Transport\ResponseStream;
 
 final class SocketResponseStream implements ResponseStream
 {

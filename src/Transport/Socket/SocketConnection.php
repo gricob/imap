@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gricob\IMAP\Transport;
+namespace Gricob\IMAP\Transport\Socket;
 
 use Exception;
+use Gricob\IMAP\Transport\Connection;
+use Gricob\IMAP\Transport\ConnectionFailed;
+use Gricob\IMAP\Transport\ResponseStream;
 
 class SocketConnection implements Connection
 {
