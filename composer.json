@@ -1,6 +1,6 @@
 {
   "name": "gricob/imap",
-  "description": "IMAP client for PHP",
+  "description": "IMAP client for PHP without php-imap extension dependency",
   "type": "library",
   "keywords": ["imap"],
   "homepage": "https://github.com/gricob/imap",
@@ -25,7 +25,7 @@
     "phpstan/phpstan": "^1.10"
   },
   "scripts": {
-    "phpstan": "vendor/bin/phpstan analyse -l 9 src",
+    "phpstan": "vendor/bin/phpstan analyse",
     "test": "vendor/bin/phpunit"
   }
 }
