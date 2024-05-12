@@ -28,7 +28,7 @@ use Gricob\IMAP\Protocol\Command\SelectCommand;
 use Gricob\IMAP\Protocol\Command\StoreCommand;
 use Gricob\IMAP\Protocol\Imap;
 use Gricob\IMAP\Protocol\Response\Line\Data\FetchData;
-use Gricob\IMAP\Protocol\Response\Line\Data\Item\BodyStructure as BodyStructure;
+use Gricob\IMAP\Protocol\Response\Line\Data\Fetch\BodyStructure;
 use Gricob\IMAP\Protocol\Response\Line\Data\ListData;
 use Gricob\IMAP\Protocol\Response\Line\Data\SearchData;
 use Gricob\IMAP\Protocol\Response\Line\Status\Code\AppendUidCode;
@@ -123,13 +123,12 @@ readonly class Client
             )
         );
 
-        /** @var FetchData $data */
         $data = $response->getData(FetchData::class)[0] ?? throw new MessageNotFound();
 
         $rawHeaders = $data->getBodySection('HEADER')?->text ?? '';
         $headers = iconv_mime_decode_headers($rawHeaders) ?: [];
 
-        if (null === $internalDate = $data->internalDate?->date) {
+        if (null === $internalDate = $data->internalDate) {
             throw new Exception('Unable to fetch internal date from message '.$id);
         }
 
@@ -197,7 +196,7 @@ readonly class Client
 
         $data = $response->getData(FetchData::class)[0];
 
-        if (null === $internalDate = $data->internalDate?->date) {
+        if (null === $internalDate = $data->internalDate) {
             throw new Exception('Unable to fetch internal date from message '.$id);
         }
 
@@ -297,8 +296,8 @@ readonly class Client
                 $part->encoding,
                 null !== $part->disposition
                     ? new Disposition(
-                        $part->disposition,
-                        $part->dispositionAttributes['filename'] ?? null
+                        $part->disposition->type,
+                        $part->disposition->attributes['filename'] ?? null
                     ) : null,
             );
         }

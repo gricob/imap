@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Gricob\IMAP\Protocol\Response;
 
 use BadMethodCallException;
-use Gricob\IMAP\Protocol\Response\Line\Data\Data;
 use Gricob\IMAP\Protocol\Response\Line\Line;
 use Gricob\IMAP\Protocol\Response\Line\Status\Status;
 
@@ -18,7 +17,7 @@ class ResponseBuilder
      */
     private array $data = [];
 
-    public function __construct(private string $statusTag)
+    public function __construct(private readonly string $statusTag)
     {
     }
 

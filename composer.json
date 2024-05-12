@@ -8,7 +8,9 @@
   "require": {
     "php": "^8.2",
     "ext-iconv": "*",
-    "psr/log": "^1.0|^2.0|^3.0"
+    "ext-ctype": "*",
+    "psr/log": "^1.0|^2.0|^3.0",
+    "doctrine/lexer": "^3.0"
   },
   "autoload": {
     "psr-4": {
@@ -25,7 +27,7 @@
     "phpstan/phpstan": "^1.10"
   },
   "scripts": {
-    "phpstan": "vendor/bin/phpstan analyse",
+    "phpstan": "vendor/bin/phpstan analyse -l 9 src",
     "test": "vendor/bin/phpunit"
   }
 }

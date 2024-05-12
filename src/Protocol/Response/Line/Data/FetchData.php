@@ -4,57 +4,30 @@ declare(strict_types=1);
 
 namespace Gricob\IMAP\Protocol\Response\Line\Data;
 
-use Gricob\IMAP\Protocol\Response\Line\Data\Item\BodySectionItem;
-use Gricob\IMAP\Protocol\Response\Line\Data\Item\BodyStructureItem;
-use Gricob\IMAP\Protocol\Response\Line\Data\Item\EnvelopeItem;
-use Gricob\IMAP\Protocol\Response\Line\Data\Item\FlagsItem;
-use Gricob\IMAP\Protocol\Response\Line\Data\Item\InternalDateItem;
-use Gricob\IMAP\Protocol\Response\Line\Data\Item\Rfc822Item;
-use Gricob\IMAP\Protocol\Response\Line\Data\Item\Rfc822SizeItem;
-use Gricob\IMAP\Protocol\Response\Line\Data\Item\UidItem;
+use Gricob\IMAP\Protocol\Response\Line\Data\Fetch\BodySection;
+use Gricob\IMAP\Protocol\Response\Line\Data\Fetch\BodyStructure;
+use Gricob\IMAP\Protocol\Response\Line\Data\Fetch\Envelope;
 
 final readonly class FetchData implements Data
 {
-    private const PATTERN = '/\* (?<id>\d*) FETCH (?<rawItems>.*)/ms';
-
     /**
-     * @param list<BodySectionItem>|null $bodySections
+     * @param array<string>|null $flags
+     * @param BodySection[] $bodySections
      */
     public function __construct(
         public int $id,
-        public ?FlagsItem $flags,
-        public ?InternalDateItem $internalDate,
-        public ?EnvelopeItem $envelope,
-        public ?Rfc822SizeItem $rfc822Size,
-        public ?Rfc822Item $rfc822,
-        public ?UidItem $uid,
-        public ?BodyStructureItem $bodyStructure,
-        public ?array $bodySections,
+        public ?array $flags = null,
+        public ?\DateTimeImmutable $internalDate = null,
+        public ?Envelope $envelope = null,
+        public ?int $rfc822Size = null,
+        public ?string $rfc822 = null,
+        public ?int $uid = null,
+        public ?BodyStructure $bodyStructure = null,
+        public array $bodySections = [],
     ) {
     }
 
-    public static function tryParse(string $raw): ?static
-    {
-        if (!preg_match(self::PATTERN, $raw, $matches)) {
-            return null;
-        }
-
-        $rawItems = $matches['rawItems'];
-
-        return new self(
-            (int) $matches['id'],
-            FlagsItem::tryParse($rawItems),
-            InternalDateItem::tryParse($rawItems),
-            EnvelopeItem::tryParse($rawItems),
-            Rfc822SizeItem::tryParse($rawItems),
-            Rfc822Item::tryParse($rawItems),
-            UidItem::tryParse($rawItems),
-            BodyStructureItem::tryParse($rawItems),
-            BodySectionItem::parseAll($rawItems),
-        );
-    }
-
-    public function getBodySection(string $name): ?BodySectionItem
+    public function getBodySection(string $name): ?BodySection
     {
         foreach (($this->bodySections ?? []) as $bodySection) {
             if ($bodySection->section == $name) {

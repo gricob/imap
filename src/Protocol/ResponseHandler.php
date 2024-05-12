@@ -5,49 +5,18 @@ declare(strict_types=1);
 namespace Gricob\IMAP\Protocol;
 
 use Gricob\IMAP\Protocol\Response\Line\CommandContinuation;
-use Gricob\IMAP\Protocol\Response\Line\Data\CapabilityData;
-use Gricob\IMAP\Protocol\Response\Line\Data\ExistsData;
-use Gricob\IMAP\Protocol\Response\Line\Data\ExpungeData;
-use Gricob\IMAP\Protocol\Response\Line\Data\FetchData;
-use Gricob\IMAP\Protocol\Response\Line\Data\FlagsData;
-use Gricob\IMAP\Protocol\Response\Line\Data\ListData;
-use Gricob\IMAP\Protocol\Response\Line\Data\RecentData;
-use Gricob\IMAP\Protocol\Response\Line\Data\SearchData;
 use Gricob\IMAP\Protocol\Response\Line\Line;
-use Gricob\IMAP\Protocol\Response\Line\Status\BadStatus;
-use Gricob\IMAP\Protocol\Response\Line\Status\ByeStatus;
-use Gricob\IMAP\Protocol\Response\Line\Status\NoStatus;
-use Gricob\IMAP\Protocol\Response\Line\Status\OkStatus;
-use Gricob\IMAP\Protocol\Response\Line\Status\PreAuthStatus;
+use Gricob\IMAP\Protocol\Response\Parser\Parser;
 use Gricob\IMAP\Protocol\Response\Response;
 use Gricob\IMAP\Protocol\Response\ResponseBuilder;
 use Gricob\IMAP\Transport\ResponseStream;
 use RuntimeException;
 
-class ResponseHandler
+readonly class ResponseHandler
 {
-    /**
-     * @var class-string<Line>[]
-     */
-    private const RESPONSE_LINES = [
-        // Status lines
-        BadStatus::class,
-        ByeStatus::class,
-        NoStatus::class,
-        OkStatus::class,
-        PreAuthStatus::class,
-        // Data lines
-        CapabilityData::class,
-        ExistsData::class,
-        FlagsData::class,
-        RecentData::class,
-        SearchData::class,
-        ListData::class,
-        FetchData::class,
-        ExpungeData::class,
-        // Continuation
-        CommandContinuation::class,
-    ];
+    public function __construct(private Parser $parser)
+    {
+    }
 
     public function handle(string $statusTag, ResponseStream $stream, ContinuationHandler $continuationHandler): Response
     {
@@ -59,7 +28,7 @@ class ResponseHandler
                 $raw .= $stream->read((int) $matches['bytes']);
                 $raw .= $stream->readLine();
             }
-            $line = $this->parseRawLine($raw);
+            $line = $this->parser->parse($raw);
 
             if ($line instanceof CommandContinuation) {
                 $continuationHandler->continue();
@@ -70,16 +39,5 @@ class ResponseHandler
         } while (!$responseBuilder->hasStatus());
 
         return $responseBuilder->build();
-    }
-
-    private function parseRawLine(string $raw): Line
-    {
-        foreach (self::RESPONSE_LINES as $LINE) {
-            if (null !== ($line = $LINE::tryParse($raw))) {
-                return $line;
-            }
-        }
-
-        throw new RuntimeException('Unable to find parser for response line: '.$raw);
     }
 }

@@ -11,8 +11,6 @@ class CommandFailed extends RuntimeException
 {
     public static function withStatus(Status $status): self
     {
-        return new self(
-            sprintf('%s %s %s', $status->tag, $status::status(), $status->message)
-        );
+        return new self($status->message);
     }
 }

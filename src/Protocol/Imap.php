@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace Gricob\IMAP\Protocol;
 
-use Exception;
 use Gricob\IMAP\Protocol\Command\Command;
-use Gricob\IMAP\Protocol\Response\Line\Status\BadStatus;
-use Gricob\IMAP\Protocol\Response\Line\Status\ByeStatus;
-use Gricob\IMAP\Protocol\Response\Line\Status\NoStatus;
-use Gricob\IMAP\Protocol\Response\Line\Status\OkStatus;
-use Gricob\IMAP\Protocol\Response\Line\Status\PreAuthStatus;
+use Gricob\IMAP\Protocol\Response\Line\Status\StatusType;
+use Gricob\IMAP\Protocol\Response\Parser\Parser;
 use Gricob\IMAP\Protocol\Response\Response;
 use Gricob\IMAP\Transport\Connection;
 use RuntimeException;
@@ -25,7 +21,7 @@ class Imap
     {
         $this->connection = $connection;
         $this->tagGenerator = new TagGenerator();
-        $this->responseHandler = new ResponseHandler();
+        $this->responseHandler = new ResponseHandler(new Parser());
     }
 
     public function __destruct()
@@ -45,13 +41,12 @@ class Imap
 
         $greeting = $this->responseHandler->handle('*', $responseStream, new UnexpectedContinuationHandler());
 
-        match (true) {
-            $greeting->status instanceof OkStatus => null, // Do nothing
-            $greeting->status instanceof PreAuthStatus => throw new RuntimeException('pre-auth is not supported'),
-            $greeting->status instanceof BadStatus,
-            $greeting->status instanceof NoStatus,
-            $greeting->status instanceof ByeStatus => throw new ConnectionRejected($greeting->status->message),
-            default => throw new Exception('Unknown greeting status')
+        match ($greeting->status->type) {
+            StatusType::OK => null, // Do nothing
+            StatusType::PREAUTH => throw new RuntimeException('pre-auth is not supported'),
+            StatusType::BAD,
+            StatusType::NO,
+            StatusType::BYE => throw new ConnectionRejected($greeting->status->message),
         };
     }
 
@@ -71,7 +66,7 @@ class Imap
 
         $response = $interaction->interact();
 
-        if (!$response->status instanceof OkStatus) {
+        if ($response->status->type != StatusType::OK) {
             throw CommandFailed::withStatus($response->status);
         }
 
