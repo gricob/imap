@@ -12,6 +12,7 @@ use Gricob\IMAP\MessageNotFound;
 use Gricob\IMAP\Mime\LazyMessage;
 use Gricob\IMAP\Mime\Part\MultiPart;
 use Gricob\IMAP\Mime\Part\SinglePart;
+use Gricob\IMAP\Protocol\Command\Authenticate\XOAuth2;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
@@ -376,5 +377,26 @@ class ClientTest extends TestCase
             ],
             $logger->logs,
         );
+    }
+
+    #[Test]
+    #[DoesNotPerformAssertions]
+    public function authenticateUsingOAuth2()
+    {
+        $this->markTestSkipped(
+            'This tests requires a valid oauth2 access token. ' .
+            'To test it, replace the access token placeholder with a valid access token and comment this line'
+        );
+
+        $client = Client::create(new Configuration(
+            'ssl',
+            'imap.gmail.com',
+            993,
+        ));
+
+        $user = 'user@example.com';
+        $accessToken = 'replace-with-access-token';
+
+        $client->authenticate(new XOAuth2($user, $accessToken));
     }
 }

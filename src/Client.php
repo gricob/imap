@@ -18,6 +18,8 @@ use Gricob\IMAP\Protocol\Command\AppendCommand;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Criteria;
 use Gricob\IMAP\Protocol\Command\Argument\SequenceSet;
 use Gricob\IMAP\Protocol\Command\Argument\Store\Flags;
+use Gricob\IMAP\Protocol\Command\Authenticate\SASLMechanism;
+use Gricob\IMAP\Protocol\Command\AuthenticateCommand;
 use Gricob\IMAP\Protocol\Command\Command;
 use Gricob\IMAP\Protocol\Command\CreateCommand;
 use Gricob\IMAP\Protocol\Command\ExpungeCommand;
@@ -83,6 +85,11 @@ readonly class Client
     public function logIn(string $username, string $password): void
     {
         $this->send(new LogInCommand($username, $password));
+    }
+
+    public function authenticate(SASLMechanism $mechanism): void
+    {
+        $this->send(new AuthenticateCommand($mechanism));
     }
 
     /**
