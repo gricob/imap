@@ -133,7 +133,7 @@ readonly class Client
         $data = $response->getData(FetchData::class)[0] ?? throw new MessageNotFound();
 
         $rawHeaders = $data->getBodySection('HEADER')?->text ?? '';
-        $headers = iconv_mime_decode_headers($rawHeaders) ?: [];
+        $headers = iconv_mime_decode_headers($rawHeaders, ICONV_MIME_DECODE_CONTINUE_ON_ERROR) ?: [];
 
         if (null === $internalDate = $data->internalDate) {
             throw new Exception('Unable to fetch internal date from message '.$id);
@@ -169,7 +169,7 @@ readonly class Client
         $data = $response->getData(FetchData::class)[0] ?? throw new MessageNotFound();
 
         $rawHeaders = $data->getBodySection('HEADER')?->text ?? '';
-        return iconv_mime_decode_headers($rawHeaders) ?: [];
+        return iconv_mime_decode_headers($rawHeaders, ICONV_MIME_DECODE_CONTINUE_ON_ERROR) ?: [];
     }
 
     public function fetchBody(int $id): Part
