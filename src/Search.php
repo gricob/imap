@@ -9,6 +9,7 @@ use Gricob\IMAP\Mime\Message;
 use Gricob\IMAP\Protocol\Command\Argument\Search\All;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Before;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Criteria;
+use Gricob\IMAP\Protocol\Command\Argument\Search\Header;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Since;
 
 class Search
@@ -20,6 +21,13 @@ class Search
 
     public function __construct(private readonly Client $client)
     {
+    }
+
+    public function header(string $fieldName, string $value): self
+    {
+        $this->criteria[] = new Header($fieldName, $value);
+
+       return $this;
     }
 
     public function before(DateTimeInterface $date): self

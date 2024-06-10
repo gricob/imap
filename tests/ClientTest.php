@@ -96,6 +96,35 @@ class ClientTest extends TestCase
     }
 
     #[Test]
+    #[Depends('logIn')]
+    #[Depends('mailbox')]
+    public function searchByHeader()
+    {
+        $messageId = '<'.uniqid().'@>';
+        $message = <<<RFC822
+        MIME-Version: 1.0
+        Date: Sat, 27 Apr 2024 20:49:48 +0200
+        Message-ID: $messageId
+        Subject: Lorem ipsum
+        From: Sender <sender@localhost>
+        To: User <user@localhost>
+        Content-Type: text/plain; charset="UTF-8"
+        
+        Dolor sit amet
+        RFC822;
+
+        $uid = self::$sut->append($message);
+
+        $result = self::$sut->search()
+            ->header('Message-ID', $messageId)
+            ->get();
+
+        $this->assertContainsOnly(LazyMessage::class, $result);
+        $this->assertCount(1, $result);
+        $this->assertEquals($uid, $result[0]->id());
+    }
+
+    #[Test]
     #[Depends('mailbox')]
     public function fetchPlain()
     {
