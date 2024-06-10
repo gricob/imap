@@ -83,6 +83,7 @@ class ParserTest extends TestCase
                 new FlagsData(['\Answered', '\Flagged', '\Deleted', '\Seen', '\Draft'])
             ],
             '* 5 RECENT' => ["* 5 RECENT\r\n", new RecentData(5)],
+            '* SEARCH' => ["* SEARCH\r\n", new SearchData([])],
             '* SEARCH 2 3 6' => ["* SEARCH 2 3 6\r\n", new SearchData([2, 3, 6])],
             '* 23 FETCH (FLAGS (\Seen))' => ["* 23 FETCH (FLAGS (\Seen))\r\n", new FetchData(23, ['\Seen'])],
             '* 23 FETCH (INTERNALDATE "17-Jul-1996 02:44:25 -0700")' => [

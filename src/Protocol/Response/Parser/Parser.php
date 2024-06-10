@@ -206,15 +206,14 @@ readonly class Parser
     private function search(): SearchData
     {
         $this->getToken(TokenType::SEARCH);
-        $this->space();
 
         $numbers = [];
         while (!$this->lexer->isNextToken(TokenType::CRLF)) {
-            $numbers[] = $this->number();
-
             if ($this->nextIsSpace()) {
                 $this->space();
             }
+
+            $numbers[] = $this->number();
         }
 
         return new SearchData($numbers);
