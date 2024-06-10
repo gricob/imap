@@ -521,7 +521,7 @@ readonly class Parser
 
         if ($this->nextIsSpace()) {
             $this->space();
-            $md5 = $this->string();
+            $md5 = $this->nstring();
         }
 
         if ($this->nextIsSpace()) {
@@ -625,12 +625,14 @@ readonly class Parser
         $this->getToken(TokenType::OPEN_PARENTHESIS);
         $type = $this->string();
         $this->space();
-        $attributes = $this->attributeValuePairs();
+        $attributes = $this->lexer->isNextToken(TokenType::NIL)
+            ? $this->nil()
+            : $this->attributeValuePairs();
         $this->getToken(TokenType::CLOSE_PARENTHESIS);
 
         return new BodyStructure\Disposition(
             $type,
-            $attributes
+            $attributes ?? []
         );
     }
 
