@@ -40,7 +40,7 @@ use Gricob\IMAP\Transport\Traceable\TraceableConnection;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
-readonly class Client
+class Client
 {
     public Configuration $configuration;
     private Imap $imap;

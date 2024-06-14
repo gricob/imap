@@ -34,6 +34,7 @@ $message = $client->fetch(1);
 // Or search messages by criteria
 $messages = $client->search()
     ->since(new DateTime('yesterday'))
+    ->not()->header('In-Reply-To'))
     ->get();
 
 ```
