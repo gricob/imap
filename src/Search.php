@@ -58,7 +58,7 @@ class Search
     /**
      * @return array<Message>
      */
-    public function get(): array
+    public function get(?PreFetchOptions $preFetchOptions = null): array
     {
         if ($this->not) {
             throw new BadMethodCallException('Not key requires to specify a search key to be applied');
@@ -68,7 +68,7 @@ class Search
             ? [new All()]
             : $this->criteria;
 
-        return $this->client->doSearch(...$criteria);
+        return $this->client->doSearch($criteria, $preFetchOptions);
     }
 
     private function addCriteria(Criteria $criteria): void

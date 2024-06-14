@@ -29,6 +29,7 @@ use Gricob\IMAP\Protocol\Command\LogInCommand;
 use Gricob\IMAP\Protocol\Command\SelectCommand;
 use Gricob\IMAP\Protocol\Command\StoreCommand;
 use Gricob\IMAP\Protocol\Imap;
+use Gricob\IMAP\Protocol\Response\Line\Data\Fetch\BodySection;
 use Gricob\IMAP\Protocol\Response\Line\Data\FetchData;
 use Gricob\IMAP\Protocol\Response\Line\Data\Fetch\BodyStructure;
 use Gricob\IMAP\Protocol\Response\Line\Data\ListData;
@@ -132,9 +133,6 @@ class Client
 
         $data = $response->getData(FetchData::class)[0] ?? throw new MessageNotFound();
 
-        $rawHeaders = $data->getBodySection('HEADER')?->text ?? '';
-        $headers = iconv_mime_decode_headers($rawHeaders, ICONV_MIME_DECODE_CONTINUE_ON_ERROR) ?: [];
-
         if (null === $internalDate = $data->internalDate) {
             throw new Exception('Unable to fetch internal date from message '.$id);
         }
@@ -145,7 +143,7 @@ class Client
 
         return new Message(
             $id,
-            $headers,
+            $this->createHeaders($data) ?? [],
             $this->createMessagePart($id, '0', $part),
             $internalDate,
         );
@@ -168,8 +166,7 @@ class Client
         /** @var FetchData $data */
         $data = $response->getData(FetchData::class)[0] ?? throw new MessageNotFound();
 
-        $rawHeaders = $data->getBodySection('HEADER')?->text ?? '';
-        return iconv_mime_decode_headers($rawHeaders, ICONV_MIME_DECODE_CONTINUE_ON_ERROR) ?: [];
+        return $this->createHeaders($data) ?? [];
     }
 
     public function fetchBody(int $id): Part
@@ -267,10 +264,10 @@ class Client
     }
 
     /**
-     * @param Criteria ...$criteria
+     * @param array<Criteria> $criteria
      * @return array<Message>
      */
-    public function doSearch(Criteria ...$criteria): array
+    public function doSearch(array $criteria, ?PreFetchOptions $preFetchOptions = null): array
     {
         $response = $this->send(
             new Protocol\Command\SearchCommand(
@@ -279,16 +276,58 @@ class Client
             )
         );
 
-        $result = [];
+        $ids = [];
         foreach ($response->data as $data) {
             if ($data instanceof SearchData) {
-                foreach ($data->numbers as $id) {
-                    $result[] = new LazyMessage($this, $id);
-                }
+                array_push($ids, ...$data->numbers);
             }
         }
 
-        return $result;
+        if (null !== $preFetchOptions) {
+            $items = [];
+
+            if ($preFetchOptions->headers) {
+                $items[] = 'BODY[HEADER]';
+            }
+
+            if ($preFetchOptions->internalDate) {
+                $items[] = 'INTERNALDATE';
+            }
+
+            $preFetchResult = $this->send(new FetchCommand(
+                $this->configuration->useUid,
+                new SequenceSet(...$ids),
+                $items,
+            ));
+
+            $messages = [];
+            foreach ($preFetchResult->data as $data) {
+                if ($data instanceof FetchData) {
+                    $messages[] = new LazyMessage(
+                        $this,
+                        $data->id,
+                        $this->createHeaders($data),
+                        $data->internalDate,
+                    );
+                }
+            }
+
+            return $messages;
+        }
+
+        return array_map(fn (int $id) => new LazyMessage($this, $id), $ids);
+    }
+
+    /**
+     * @return array<string, string>|null
+     */
+    private function createHeaders(FetchData $data): ?array
+    {
+        if (null === $headerSection = $data->getBodySection('HEADER')) {
+            return null;
+        }
+
+        return iconv_mime_decode_headers($headerSection->text, ICONV_MIME_DECODE_CONTINUE_ON_ERROR) ?: [];
     }
 
     private function createMessagePart(int $id, string $section, BodyStructure\Part $part): Mime\Part\Part

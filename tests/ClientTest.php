@@ -12,6 +12,7 @@ use Gricob\IMAP\MessageNotFound;
 use Gricob\IMAP\Mime\LazyMessage;
 use Gricob\IMAP\Mime\Part\MultiPart;
 use Gricob\IMAP\Mime\Part\SinglePart;
+use Gricob\IMAP\PreFetchOptions;
 use Gricob\IMAP\Protocol\Command\Authenticate\XOAuth2;
 use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
@@ -122,6 +123,36 @@ class ClientTest extends TestCase
         $this->assertContainsOnly(LazyMessage::class, $result);
         $this->assertCount(1, $result);
         $this->assertEquals($uid, $result[0]->id());
+    }
+
+    #[Test]
+    #[Depends('logIn')]
+    #[Depends('mailbox')]
+    public function searchGivenPreFetchOptions()
+    {
+        $messageId = '<'.uniqid().'@>';
+        $message = <<<RFC822
+        MIME-Version: 1.0
+        Date: Sat, 27 Apr 2024 20:49:48 +0200
+        Message-ID: $messageId
+        Subject: Lorem ipsum
+        From: Sender <sender@localhost>
+        To: User <user@localhost>
+        Content-Type: text/plain; charset="UTF-8"
+        
+        Dolor sit amet
+        RFC822;
+
+        self::$sut->append($message);
+
+        $result = self::$sut->search()->get(new PreFetchOptions(true, true));
+
+        $this->assertContainsOnly(LazyMessage::class, $result);
+        $refClass = new \ReflectionClass(LazyMessage::class);
+        foreach ($result as $message) {
+            $this->assertTrue($refClass->getProperty('headers')->isInitialized($message));
+            $this->assertTrue($refClass->getProperty('internalDate')->isInitialized($message));
+        }
     }
 
     #[Test]

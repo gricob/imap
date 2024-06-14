@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests;
 
 use Gricob\IMAP\Client;
+use Gricob\IMAP\PreFetchOptions;
+use Gricob\IMAP\Protocol\Command\Argument\Search\All;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Before;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Criteria;
 use Gricob\IMAP\Protocol\Command\Argument\Search\Header;
@@ -39,7 +41,7 @@ final class SearchTest extends TestCase
     #[Test]
     public function getGivenHeader(): void
     {
-        $this->expectSearch(new Header('In-Reply-To', ''));
+        $this->expectSearch([new Header('In-Reply-To', '')]);
 
         $this->sut->header('In-Reply-To')->get();
     }
@@ -48,7 +50,7 @@ final class SearchTest extends TestCase
     public function getGivenBefore(): void
     {
         $date = new \DateTimeImmutable();
-        $this->expectSearch(new Before($date));
+        $this->expectSearch([new Before($date)]);
 
         $this->sut->before($date)->get();
     }
@@ -57,7 +59,7 @@ final class SearchTest extends TestCase
     public function getGivenSince(): void
     {
         $date = new \DateTimeImmutable();
-        $this->expectSearch(new Not(new Since($date)));
+        $this->expectSearch([new Not(new Since($date))]);
 
         $this->sut->not()->since($date)->get();
     }
@@ -65,7 +67,7 @@ final class SearchTest extends TestCase
     #[Test]
     public function getGivenNotHeader(): void
     {
-        $this->expectSearch(new Not(new Header('In-Reply-To', '')));
+        $this->expectSearch([new Not(new Header('In-Reply-To', ''))]);
 
         $this->sut->not()->header('In-Reply-To')->get();
     }
@@ -74,7 +76,7 @@ final class SearchTest extends TestCase
     public function getGivenNotBefore(): void
     {
         $date = new \DateTimeImmutable();
-        $this->expectSearch(new Not(new Before($date)));
+        $this->expectSearch([new Not(new Before($date))]);
 
         $this->sut->not()->before($date)->get();
     }
@@ -83,16 +85,25 @@ final class SearchTest extends TestCase
     public function getGivenNotSince(): void
     {
         $date = new \DateTimeImmutable();
-        $this->expectSearch(new Not(new Since($date)));
+        $this->expectSearch([new Not(new Since($date))]);
 
         $this->sut->not()->since($date)->get();
     }
 
-    private function expectSearch(Criteria ...$criteria): void
+    #[Test]
+    public function getGivenPreFetchOptions(): void
+    {
+        $preFetchOptions = new PreFetchOptions(true, true);
+        $this->expectSearch([new All()], $preFetchOptions);
+
+        $this->sut->get($preFetchOptions);
+    }
+
+    private function expectSearch(array $criteria): void
     {
         $this->clientMock->expects(self::once())
             ->method('doSearch')
-            ->with(...$criteria)
+            ->with($criteria)
             ->willReturn([]);
     }
 }

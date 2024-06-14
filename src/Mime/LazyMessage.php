@@ -13,8 +13,18 @@ class LazyMessage extends Message
     public function __construct(
         private Client $client,
         int $id,
+        ?array $headers = null,
+        ?DateTimeImmutable $internalDate = null,
     ) {
         $this->id = $id;
+
+        if (null !== $headers) {
+            $this->headers = $headers;
+        }
+
+        if (null !== $internalDate) {
+            $this->internalDate = $internalDate;
+        }
     }
 
     public function headers(): array
