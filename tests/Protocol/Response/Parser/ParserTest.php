@@ -10,7 +10,6 @@ use Gricob\IMAP\Protocol\Response\Line\Data\Fetch\Address;
 use Gricob\IMAP\Protocol\Response\Line\Data\Fetch\BodySection;
 use Gricob\IMAP\Protocol\Response\Line\Data\Fetch\BodyStructure;
 use Gricob\IMAP\Protocol\Response\Line\Data\Fetch\Envelope;
-use Gricob\IMAP\Protocol\Response\Line\Data\Fetch\FlagsItem;
 use Gricob\IMAP\Protocol\Response\Line\Data\FetchData;
 use Gricob\IMAP\Protocol\Response\Line\Data\FlagsData;
 use Gricob\IMAP\Protocol\Response\Line\Data\ListData;
@@ -264,6 +263,183 @@ class ParserTest extends TestCase
                             new BodyStructure\Disposition('inline', []),
                             null,
                             null,
+                        )
+                    )
+                )
+            ],
+            '* 359408 FETCH (BODYSTRUCTURE (MULTIPART/REPORT)' => [
+                "* 359408 FETCH (BODYSTRUCTURE (" .
+                "(" .
+                    "(" .
+                        "(\"TEXT\" \"PLAIN\" (\"CHARSET\" \"UTF-8\") NIL NIL \"QUOTED-PRINTABLE\" 309 7 NIL NIL NIL)" .
+                        "(\"TEXT\" \"HTML\" (\"CHARSET\" \"UTF-8\") NIL NIL \"QUOTED-PRINTABLE\" 1478 30 NIL NIL NIL) " .
+                        "\"ALTERNATIVE\" (\"BOUNDARY\" \"00000000000024c65f061ab22f70\") NIL NIL" .
+                    ")" .
+                    "(\"IMAGE\" \"PNG\" (\"NAME\" \"icon.png\") \"<icon.png>\" NIL \"BASE64\" 1986 NIL (\"ATTACHMENT\" (\"FILENAME\" \"icon.png\")) NIL) " .
+                    "\"RELATED\" (\"BOUNDARY\" \"00000000000024c657061ab22f6f\") NIL NIL" .
+                ")" .
+                "(\"MESSAGE\" \"DELIVERY-STATUS\" NIL NIL NIL \"7BIT\" 543 NIL NIL NIL)" .
+                "(\"MESSAGE\" \"RFC822\" NIL NIL NIL \"7BIT\" 2894 (\"Wed, 12 Jun 2024 14:27:35 +0000\" \"=?UTF-8?Q?Incidencia_devoluci=C3=B3n_con_referencia_MRW:_baz_?= =?UTF-8?Q?y_Cliente:_2b1767ae-d484-4cfb-b101-6eff8420ce17?=\" ((NIL NIL \"test\" \"example.com\")) ((NIL NIL \"test\" \"example.com\")) ((NIL NIL \"test\" \"example.com\")(NIL NIL \"incidences\" \"example.com\")) ((NIL NIL \"foo\" \"bar.com\")(NIL NIL \"incidences\" \"example.com\")) NIL NIL NIL \"<76b88bb259f0d1e8f4ac669490d13266@swift.generated>\") ((\"TEXT\" \"PLAIN\" NIL NIL NIL \"7BIT\" 29 1 NIL NIL NIL) \"MIXED\" (\"BOUNDARY\" \"_=_swift_1718202456_1753f3b259728d2401362dd0aada9a54_=_\") NIL NIL) 58 NIL NIL NIL) " .
+                "\"REPORT\" (\"BOUNDARY\" \"00000000000024af3f061ab22f6e\" \"REPORT-TYPE\" \"delivery-status\") NIL NIL" .
+                ")" .
+                ")",
+                new FetchData(
+                    359408,
+                    bodyStructure: new BodyStructure(
+                        new BodyStructure\MultiPart('REPORT', [
+                            'BOUNDARY' => '00000000000024af3f061ab22f6e',
+                            'REPORT-TYPE' => 'delivery-status'
+                        ],
+                        [
+                            new BodyStructure\MultiPart(
+                                'RELATED',
+                                [
+                                    'BOUNDARY' => '00000000000024c657061ab22f6f',
+                                ],
+                                [
+                                    new BodyStructure\MultiPart(
+                                        'ALTERNATIVE',
+                                        [
+                                            'BOUNDARY' => '00000000000024c65f061ab22f70',
+                                        ],
+                                        [
+                                            new BodyStructure\TextPart(
+                                                'PLAIN',
+                                                [
+                                                    'CHARSET' => 'UTF-8',
+                                                ],
+                                                null,
+                                                null,
+                                                'QUOTED-PRINTABLE',
+                                                309,
+                                                7,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                            ),
+                                            new BodyStructure\TextPart(
+                                                'HTML',
+                                                [
+                                                    'CHARSET' => 'UTF-8',
+                                                ],
+                                                null,
+                                                null,
+                                                'QUOTED-PRINTABLE',
+                                                1478,
+                                                30,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                            )
+                                        ],
+                                        null,
+                                        null,
+                                        null,
+                                    ),
+                                    new BodyStructure\SinglePart(
+                                        'IMAGE',
+                                        'PNG',
+                                        [
+                                            'NAME' => 'icon.png',
+                                        ],
+                                        '<icon.png>',
+                                        null,
+                                        'BASE64',
+                                        1986,
+                                        null,
+                                        new BodyStructure\Disposition(
+                                            'ATTACHMENT',
+                                            [
+                                                'FILENAME' => 'icon.png',
+                                            ]
+                                        ),
+                                        null,
+                                        null,
+                                    )
+                                ],
+                                null,
+                                null,
+                                null,
+                            ),
+                            new BodyStructure\SinglePart(
+                                'MESSAGE',
+                                'DELIVERY-STATUS',
+                                [],
+                                null,
+                                null,
+                                '7BIT',
+                                543,
+                                null,
+                                null,
+                                null,
+                                null,
+                            ),
+                            new BodyStructure\MessagePart(
+                                [],
+                                null,
+                                null,
+                                '7BIT',
+                                2894,
+                                new Envelope(
+                                    new \DateTimeImmutable("Wed, 12 Jun 2024 14:27:35 +0000"),
+                                    '=?UTF-8?Q?Incidencia_devoluci=C3=B3n_con_referencia_MRW:_baz_?= =?UTF-8?Q?y_Cliente:_2b1767ae-d484-4cfb-b101-6eff8420ce17?=',
+                                    [
+                                        new Address(null, null, 'test', 'example.com'),
+                                    ],
+                                    [
+                                        new Address(null, null, 'test', 'example.com'),
+                                    ],
+                                    [
+                                        new Address(null, null, 'test', 'example.com'),
+                                        new Address(null, null, 'incidences', 'example.com'),
+                                    ],
+                                    [
+                                        new Address(null, null, 'foo', 'bar.com'),
+                                        new Address(null, null, 'incidences', 'example.com'),
+                                    ],
+                                    null,
+                                    null,
+                                    null,
+                                    '<76b88bb259f0d1e8f4ac669490d13266@swift.generated>',
+                                ),
+                                new BodyStructure(
+                                    new BodyStructure\MultiPart(
+                                        'MIXED',
+                                        [
+                                            'BOUNDARY' => '_=_swift_1718202456_1753f3b259728d2401362dd0aada9a54_=_',
+                                        ],
+                                        [
+                                            new BodyStructure\TextPart(
+                                                'PLAIN',
+                                                [],
+                                                null,
+                                                null,
+                                                '7BIT',
+                                                29,
+                                                1,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                            )
+                                        ],
+                                        null,
+                                        null,
+                                        null,
+                                    )
+                                ),
+                                58,
+                                null,
+                                null,
+                                null,
+                                null,
+                            )
+                        ],
+                        null,
+                        null,
+                        null,
                         )
                     )
                 )

@@ -269,9 +269,13 @@ readonly class Parser
                     }
                     break;
                 case TokenType::ENVELOPE:
+                    $this->getToken(TokenType::ENVELOPE);
+                    $this->space();
                     $envelope = $this->envelope();
                     break;
                 case TokenType::BODYSTRUCTURE:
+                    $this->getToken(TokenType::BODYSTRUCTURE);
+                    $this->space();
                     $bodyStructure = $this->bodyStructure();
                     break;
                 default:
@@ -297,8 +301,6 @@ readonly class Parser
      */
     private function envelope(): Envelope
     {
-        $this->getToken(TokenType::ENVELOPE);
-        $this->space();
         $this->getToken(TokenType::OPEN_PARENTHESIS);
         $date = $this->envelopeDate();
         $this->space();
@@ -403,9 +405,6 @@ readonly class Parser
      */
     public function bodyStructure(): BodyStructure
     {
-        $this->getToken(TokenType::BODYSTRUCTURE);
-        $this->space();
-
         $part = $this->part();
 
         return new BodyStructure($part);
@@ -642,6 +641,11 @@ readonly class Parser
     private function attributeValuePairs(): array
     {
         $values = [];
+        if ($this->lexer->isNextToken(TokenType::NIL)) {
+            $this->nil();
+            return $values;
+        }
+
         $this->getToken(TokenType::OPEN_PARENTHESIS);
 
         while (!$this->lexer->isNextToken(TokenType::CLOSE_PARENTHESIS)) {
@@ -863,7 +867,13 @@ readonly class Parser
     private function getToken(TokenType ...$expected): Token
     {
         if (!empty($expected) && !in_array($this->lexer->lookahead?->type, $expected)) {
-            throw ParseError::unexpectedToken($this->lexer->lookahead?->type, $expected);
+            $position = $this->lexer->lookahead?->position;
+
+            throw ParseError::unexpectedToken(
+                $this->lexer->lookahead?->type,
+                $expected,
+                $position ? $this->lexer->getInputUntilPosition($position) : ''
+            );
         }
 
         $this->lexer->moveNext();
