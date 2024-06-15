@@ -48,9 +48,9 @@ class ClientTest extends TestCase
 
     #[Test]
     #[Depends('logIn')]
-    public function list()
+    public function mailboxes()
     {
-        $mailboxes = self::$sut->list();
+        $mailboxes = self::$sut->mailboxes();
 
         $this->assertContainsOnlyInstancesOf(Mailbox::class, $mailboxes);
     }
@@ -416,7 +416,7 @@ class ClientTest extends TestCase
 
         $this->assertContains(
             $name,
-            array_map(fn (Mailbox $mailbox) => $mailbox->name, self::$sut->list())
+            array_map(fn (Mailbox $mailbox) => $mailbox->name, self::$sut->mailboxes())
         );
     }
 

@@ -96,7 +96,7 @@ class Client
     /**
      * @return array<Mailbox>
      */
-    public function list(string $referenceName = '', string $pattern = '*'): array
+    public function mailboxes(string $referenceName = '', string $pattern = '*'): array
     {
         $response = $this->send(new ListCommand($referenceName, $pattern));
 

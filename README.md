@@ -6,6 +6,7 @@ composer require gricob/imap
 ```
 
 ## Usage
+
 ```php
 $client = \Gricob\IMAP\Client::create(
     new \Gricob\IMAP\Configuration(
@@ -23,7 +24,7 @@ $client = \Gricob\IMAP\Client::create(
 $client->logIn('username', 'password');
 
 // List available mailbox
-$mailboxes = $client->list();
+$mailboxes = $client->mailboxes();
 
 // Select an specific mailbox
 $client->select($mailboxes[0]->name);
