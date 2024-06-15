@@ -126,7 +126,7 @@ class Client
         $response = $this->imap->send(
             new FetchCommand(
                 $this->configuration->useUid,
-                new SequenceSet($id, $id),
+                new SequenceSet($id),
                 ['INTERNALDATE', 'BODY[HEADER]', 'BODYSTRUCTURE']
             )
         );
@@ -158,7 +158,7 @@ class Client
         $response = $this->imap->send(
             new FetchCommand(
                 $this->configuration->useUid,
-                new SequenceSet($id, $id),
+                new SequenceSet($id),
                 ['BODY[HEADER]']
             )
         );
@@ -174,7 +174,7 @@ class Client
         $response = $this->send(
             new FetchCommand(
                 $this->configuration->useUid,
-                new SequenceSet($id, $id),
+                new SequenceSet($id),
                 ['BODYSTRUCTURE']
             )
         );
@@ -193,7 +193,7 @@ class Client
         $response = $this->send(
             new FetchCommand(
                 $this->configuration->useUid,
-                new SequenceSet($id, $id),
+                new SequenceSet($id),
                 ['INTERNALDATE']
             )
         );
@@ -212,7 +212,7 @@ class Client
         $response = $this->send(
             new FetchCommand(
                 $this->configuration->useUid,
-                new SequenceSet($id, $id),
+                new SequenceSet($id),
                 ["BODY[$section]"]
             )
         );
