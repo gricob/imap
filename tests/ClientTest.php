@@ -58,9 +58,17 @@ class ClientTest extends TestCase
     #[Test]
     #[Depends('logIn')]
     #[DoesNotPerformAssertions]
-    public function mailbox()
+    public function selectGivenMailboxName()
     {
         self::$sut->select('INBOX');
+    }
+
+    #[Test]
+    #[Depends('logIn')]
+    #[DoesNotPerformAssertions]
+    public function selectGivenMailbox()
+    {
+        self::$sut->select(new Mailbox([], '/', 'INBOX'));
     }
 
     #[Test]
@@ -98,7 +106,6 @@ class ClientTest extends TestCase
 
     #[Test]
     #[Depends('logIn')]
-    #[Depends('mailbox')]
     public function searchByHeader()
     {
         $messageId = '<'.uniqid().'@>';
@@ -115,6 +122,7 @@ class ClientTest extends TestCase
         RFC822;
 
         $uid = self::$sut->append($message);
+        self::$sut->select('INBOX');
 
         $result = self::$sut->search()
             ->header('Message-ID', $messageId)
@@ -127,7 +135,6 @@ class ClientTest extends TestCase
 
     #[Test]
     #[Depends('logIn')]
-    #[Depends('mailbox')]
     public function searchGivenPreFetchOptions()
     {
         $messageId = '<'.uniqid().'@>';
@@ -144,6 +151,7 @@ class ClientTest extends TestCase
         RFC822;
 
         self::$sut->append($message);
+        self::$sut->select('INBOX');
 
         $result = self::$sut->search()->get(new PreFetchOptions(true, true));
 
@@ -156,7 +164,6 @@ class ClientTest extends TestCase
     }
 
     #[Test]
-    #[Depends('mailbox')]
     public function fetchPlain()
     {
         $uid = self::$sut->append(
@@ -174,6 +181,7 @@ class ClientTest extends TestCase
             RFC822
         );
 
+        self::$sut->select('INBOX');
         $message = self::$sut->fetch($uid);
 
         $this->assertEquals([
@@ -192,7 +200,6 @@ class ClientTest extends TestCase
     }
 
     #[Test]
-    #[Depends('mailbox')]
     public function fetchAlternative()
     {
         $uid = self::$sut->append(
@@ -237,7 +244,6 @@ class ClientTest extends TestCase
     }
 
     #[Test]
-    #[Depends('mailbox')]
     public function fetchMixed()
     {
         $attachment = <<<BASE64
@@ -367,6 +373,7 @@ class ClientTest extends TestCase
 
             RFC822);
 
+        self::$sut->select('INBOX');
         $message = self::$sut->fetch($uid);
 
         $this->assertEquals('Dolor sit amet', $message->textBody());
@@ -376,16 +383,15 @@ class ClientTest extends TestCase
     }
 
     #[Test]
-    #[Depends('mailbox')]
     public function fetchMissing()
     {
         $this->expectException(MessageNotFound::class);
 
+        self::$sut->select('INBOX');
         self::$sut->fetch(999999999);
     }
 
     #[Test]
-    #[Depends('mailbox')]
     #[DoesNotPerformAssertions]
     public function deleteMessage()
     {
@@ -403,6 +409,7 @@ class ClientTest extends TestCase
             RFC822
         );
 
+        self::$sut->select('INBOX');
         self::$sut->deleteMessage($id);
     }
 

@@ -27,7 +27,7 @@ $client->logIn('username', 'password');
 $mailboxes = $client->mailboxes();
 
 // Select an specific mailbox
-$client->select($mailboxes[0]->name);
+$client->select($mailboxes[0]);
 
 // Fetch message by sequence number or uid (depends on useUid configuration)
 $message = $client->fetch(1);

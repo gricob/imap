@@ -29,7 +29,6 @@ use Gricob\IMAP\Protocol\Command\LogInCommand;
 use Gricob\IMAP\Protocol\Command\SelectCommand;
 use Gricob\IMAP\Protocol\Command\StoreCommand;
 use Gricob\IMAP\Protocol\Imap;
-use Gricob\IMAP\Protocol\Response\Line\Data\Fetch\BodySection;
 use Gricob\IMAP\Protocol\Response\Line\Data\FetchData;
 use Gricob\IMAP\Protocol\Response\Line\Data\Fetch\BodyStructure;
 use Gricob\IMAP\Protocol\Response\Line\Data\ListData;
@@ -45,6 +44,8 @@ class Client
 {
     public Configuration $configuration;
     private Imap $imap;
+
+    private ?string $selectedMailbox = null;
 
     private function __construct(
         Configuration $configuration,
@@ -106,11 +107,16 @@ class Client
         );
     }
 
-    public function select(string $mailbox): self
+    public function select(Mailbox|string $mailbox): void
     {
-        $this->send(new SelectCommand($mailbox));
+        $mailboxName = $mailbox instanceof Mailbox ? $mailbox->name : $mailbox;
 
-        return $this;
+        if ($this->selectedMailbox === $mailboxName) {
+            return;
+        }
+
+        $this->send(new SelectCommand($mailboxName));
+        $this->selectedMailbox = $mailboxName;
     }
 
     public function search(): Search
