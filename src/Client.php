@@ -313,9 +313,14 @@ class Client
             $messages = [];
             foreach ($preFetchResult->data as $data) {
                 if ($data instanceof FetchData) {
+                    $id = $data->id;
+                    if ($this->configuration->useUid) {
+                        $id = $data->uid ?? throw new RuntimeException('Unable to get uid from message '.$id);
+                    }
+
                     $messages[] = new LazyMessage(
                         $this,
-                        $data->id,
+                        $id,
                         $this->createHeaders($data),
                         $data->internalDate,
                     );
