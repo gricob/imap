@@ -289,6 +289,10 @@ class Client
             }
         }
 
+        if (empty($ids)) {
+            return [];
+        }
+
         if (null !== $preFetchOptions) {
             $items = [];
 

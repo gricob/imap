@@ -164,6 +164,21 @@ class ClientTest extends TestCase
     }
 
     #[Test]
+    #[Depends('logIn')]
+    public function searchNoResultGivenPreFetchOptions()
+    {
+        $messageId = '<'.uniqid().'@>';
+
+        self::$sut->select('INBOX');
+
+        $result = self::$sut->search()
+            ->header('Message-Id', $messageId)
+            ->get(new PreFetchOptions(true, true));
+
+        $this->assertEmpty($result);
+    }
+
+    #[Test]
     public function fetchPlain()
     {
         $uid = self::$sut->append(
