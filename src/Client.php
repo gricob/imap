@@ -232,7 +232,13 @@ class Client
     {
         $id = $message instanceof Message ? $message->id() : $message;
 
-        $this->send(new StoreCommand(new SequenceSet($id), new Flags(['\Deleted'], '+')));
+        $this->send(
+            new StoreCommand(
+                $this->configuration->useUid,
+                new SequenceSet($id),
+                new Flags(['\Deleted'], '+')
+            )
+        );
 
         $this->send(new ExpungeCommand());
     }

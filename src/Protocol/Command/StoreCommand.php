@@ -10,11 +10,12 @@ use Gricob\IMAP\Protocol\Command\Argument\Store\Flags;
 final readonly class StoreCommand extends Command
 {
     public function __construct(
+        bool $uid,
         SequenceSet $sequenceSet,
         Flags $dataItem
     ) {
         parent::__construct(
-            'STORE',
+            $uid ? 'UID STORE' : 'STORE',
             $sequenceSet,
             $dataItem,
         );
