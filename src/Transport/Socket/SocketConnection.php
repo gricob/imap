@@ -58,7 +58,7 @@ class SocketConnection implements Connection
             return;
         }
 
-        $this->stream = stream_socket_client(
+        $this->stream = @stream_socket_client(
             sprintf('%s://%s:%s', $this->transport, $this->host, $this->port),
             $errorCode,
             $errorMessage,

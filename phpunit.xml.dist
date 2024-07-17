@@ -1,4 +1,6 @@
-<phpunit>
+<phpunit
+    failOnWarning="true"
+>
     <testsuite name="imap">
         <directory>tests</directory>
     </testsuite>
