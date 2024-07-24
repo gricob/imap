@@ -304,7 +304,10 @@ readonly class Parser
         $this->getToken(TokenType::OPEN_PARENTHESIS);
         $date = $this->envelopeDate();
         $this->space();
-        $subject = $this->nstring();
+        $subject = match($this->lexer->lookahead?->type) {
+            TokenType::OPEN_BRACES => $this->literal(),
+            default => $this->nstring(),
+        };
         $this->space();
         $from = $this->nullableAddressList();
         $this->space();
