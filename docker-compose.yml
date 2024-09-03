@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   imap-server:
-    image: greenmail/standalone
+    image: greenmail/standalone:2.1.0-rc-1
     ports:
       - 3143:3143
       - 3993:3993

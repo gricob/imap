@@ -454,7 +454,7 @@ class ClientTest extends TestCase
         $this->assertEquals(
             [
                 'debug' => [
-                    ['* OK IMAP4rev1 Server GreenMail v2.1.0-alpha-4 ready\r\n'],
+                    ['* OK IMAP4rev1 Server GreenMail v2.1.0-rc-1 ready\r\n'],
                     ['A001 LOGIN \"user\" \"pass\"\r\n'],
                     ['A001 OK LOGIN completed.\r\n']
                 ]
