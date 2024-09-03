@@ -27,4 +27,4 @@ jobs:
       - uses: php-actions/composer@v6
       - run: vendor/bin/phpunit
       - if: always()
-        run: docker-compose -f "docker-compose.yml" down
+        run: docker compose -f "docker-compose.yml" down
