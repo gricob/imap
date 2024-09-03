@@ -31,6 +31,7 @@ final readonly class SinglePart extends Part
     {
         return match ($this->encoding) {
             'quoted-printable' => quoted_printable_decode($this->body()),
+            'base64' => base64_decode($this->body()),
             default => $this->body(),
         };
     }
