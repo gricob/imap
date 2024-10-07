@@ -37,6 +37,8 @@ readonly class Parser
      */
     public function parse(string $raw): Line
     {
+        $raw = $this->sanitizeInvalidEncoding($raw);
+
         $this->lexer->setInput($raw);
         $this->lexer->moveNext();
 
@@ -909,5 +911,21 @@ readonly class Parser
         }
 
         return $value;
+    }
+
+    private function sanitizeInvalidEncoding(string $raw): string
+    {
+        if (mb_check_encoding($raw, 'US-ASCII')) {
+            return $raw;
+        }
+
+        for ($i = 0; $i < strlen($raw); $i++) {
+            $character = $raw[$i];
+            if (!mb_check_encoding($character, 'US-ASCII')) {
+                $raw[$i] = ' ';
+            }
+        }
+
+        return $raw;
     }
 }
