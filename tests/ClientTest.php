@@ -203,7 +203,7 @@ class ClientTest extends TestCase
             'MIME-Version' => '1.0',
             'Date' => 'Sat, 27 Apr 2024 20:49:48 +0200',
             'Message-ID' => '<CAMjJg5jatty9mNkfS871w6=oDqXGETmpT9Y6_b7vU8_vz_yYMw@example.com>',
-            'User-Agent' => 'Mozilla/5.0 (I?; CPU iPhone OS 5_0_1 like Mac OS X) AppleWebKit/534.46 (KHTML^C like Gecko) Version',
+            'User-Agent' => 'Mozilla/5.0 (I  ?; CPU iPhone OS 5_0_1 like Mac OS X) AppleWebKit/534.46 (KHTML^C like Gecko) Version',
             'Subject' => 'Lorem ipsum',
             'From' => 'Sender <sender@localhost>',
             'To' => 'User <user@localhost>',

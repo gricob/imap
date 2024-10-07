@@ -244,6 +244,35 @@ class ParserTest extends TestCase
                     ]
                 )
             ],
+            '* 12 FETCH (BODY[HEADER] ...) with invalid character' => [
+                "* 12 FETCH (BODY[HEADER] {342}\r\n" .
+                "Date: Wed, 17 Jul 1996 02:23:25 -0700 (PDT)\r\n" .
+                "From: Terry Gray <gray@cac.washington.edu>\r\n" .
+                "Subject: IMAP4rev1 WG mtg summary and � minutes\r\n" .
+                "To: imap@cac.washington.edu\r\n" .
+                "cc: minutes@CNRI.Reston.VA.US, John Klensin <KLENSIN@MIT.EDU>\r\n" .
+                "Message-Id: <B27397-0100000@cac.washington.edu>\r\n" .
+                "MIME-Version: 1.0\r\n" .
+                "Content-Type: TEXT/PLAIN; CHARSET=US-ASCII\r\n" .
+                "\r\n" .
+                ")\r\n",
+                new FetchData(
+                    12,
+                    bodySections: [
+                        new BodySection(
+                            'HEADER',
+                            "Date: Wed, 17 Jul 1996 02:23:25 -0700 (PDT)\r\n" .
+                            "From: Terry Gray <gray@cac.washington.edu>\r\n" .
+                            "Subject: IMAP4rev1 WG mtg summary and     minutes\r\n" .
+                            "To: imap@cac.washington.edu\r\n" .
+                            "cc: minutes@CNRI.Reston.VA.US, John Klensin <KLENSIN@MIT.EDU>\r\n" .
+                            "Message-Id: <B27397-0100000@cac.washington.edu>\r\n" .
+                            "MIME-Version: 1.0\r\n" .
+                            "Content-Type: TEXT/PLAIN; CHARSET=US-ASCII"
+                        ),
+                    ]
+                )
+            ],
             '* 17 FETCH (BODYSTRUCTURE text without disposition attributes)' => [
                 "* 17 FETCH (" .
                     "BODYSTRUCTURE (\"TEXT\" \"PLAIN\" (\"charset\" \"UTF-8\") NIL NIL \"7BIT\" 24 1 NIL (\"inline\" NIL) NIL)" .
